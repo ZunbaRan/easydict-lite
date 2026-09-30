@@ -18,6 +18,6 @@
 - 文件命名与 slug 规则（含同一任务与 history 共享 slug）见
   [`../histories/README.md`](../histories/README.md#命名与-slug)。
 
-`active/swift-migration.md` 是长期的 Objective-C-to-Swift 迁移路线图，不适用按任务命名规则。
-保持其中的已完成历史和剩余工作与当前源码同步；如果某个迁移切片需要单独的里程碑或验证，
-为它创建聚焦的计划。
+上游 Objective-C-to-Swift 长期迁移路线图已作为
+[历史参考](../design-docs/upstream-swift-migration.md) 保存；精简分支使用纯 Swift 运行时，
+旧功能的剩余迁移事项不构成当前任务。

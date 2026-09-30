@@ -29,7 +29,8 @@ review。建议选择当前最新、适合复杂编程任务的 GPT 或 Claude �
 
 ## 开始开发
 
-从源码构建请参阅[开发者构建指南](docs/user-docs/zh/GUIDE.md#开发者构建)。使用 Xcode
+从源码构建请参阅[开发者构建指南](docs/user-docs/zh/GUIDE.md#开发者构建)。可直接运行
+`scripts/focused/package-app.sh release` 与 `scripts/focused/run-tests.sh`。使用 Xcode
 打开 `Easydict.xcworkspace`，选择 `Easydict` scheme 后编译或运行；请使用 workspace，
 而不是 `Easydict.xcodeproj`。修改前请先理解涉及的实际行为、调用关系和架构边界。
 
@@ -37,7 +38,7 @@ review。建议选择当前最新、适合复杂编程任务的 GPT 或 Claude �
 
 - 默认向 `dev` 提交；维护者指定其他目标分支时以其为准。
 - 分支使用 `类型/简短描述` 的 kebab-case 格式，例如 `feat/openai-translation` 或
-  `fix/ocr-window-focus`；请勿直接在 `dev` 或 `main` 上提交。
+  `fix/selection-window-focus`；请勿直接在 `dev` 或 `main` 上提交。
 - 提交使用 Angular-style 格式，并保持单个提交语义聚焦。
 - 请在 PR 模板的“关联 Issue”区域填写相关 Issue；请勿使用 GitHub 自动关闭关键字或
   Development 侧栏的自动关闭关联。

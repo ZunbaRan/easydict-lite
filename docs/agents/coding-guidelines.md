@@ -29,7 +29,7 @@
 
 - 新功能优先使用 Swift/SwiftUI；现有 AppKit 或 Objective-C 集成需要时沿用对应边界。
 - 现有 Objective-C 允许必要的 bug 修复，不要求为局部修复先迁移。迁移只在任务范围内进行。
-- Swift 迁移进度见 [`swift-migration.md`](../exec-plans/active/swift-migration.md)。
+- 原项目 Swift 迁移计划保留历史参考；精简分支运行时已移除 Objective-C 边界。
 
 ## Swift 组织与实践
 
@@ -50,7 +50,9 @@
 ## 本地化
 
 - 所有用户可见 UI 文本必须本地化，不在 SwiftUI、AppKit、脚本或打包 web 资源中硬编码。
-- `Localizable.xcstrings` 是应用主 String Catalog。新增 key 或改变含义时检查现有 locale，
+- `Easydict/App/Localizable.xcstrings` 是应用主 String Catalog。SwiftPM 的
+  `Easydict/Swift/Focused/Resources/*/Localizable.strings` 是其构建镜像，须保持同步。
+  新增 key 或改变含义时检查现有 locale，
   并更新所有受影响的 locale。
 - 在 UI 和字符串 API 中优先直接使用静态 String Catalog key。
 - 不动态构建本地化 key，也不拼接本地化片段；本地化完整句子并传入运行时参数。

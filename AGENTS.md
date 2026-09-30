@@ -1,6 +1,7 @@
 # AGENTS.md
 
-Easydict 是一款 macOS 词典和翻译应用，支持查词、文本翻译、划词翻译和 OCR 截图翻译。
+Easydict Lite 是 Easydict 的精简 macOS 分支，只支持鼠标划词、显式剪贴板翻译和
+OpenAI 兼容 / DeepSeek LLM 通道，使用单一原生 Liquid Glass 结果面板。
 
 `AGENTS.md` 是 Agent 的唯一任务入口；详细规则只在对应专题文档维护。
 

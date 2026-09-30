@@ -1,5 +1,8 @@
 # 构建与测试
 
+精简分支使用 SwiftPM 和一个生成的 Xcode 工程，最低 macOS 26，Swift 6.2+。
+本机 Command Line Tools 路径通过打包脚本构建原生应用；完整 Xcode 环境仍可使用 workspace。
+
 ## 测试与验证原则
 
 - 只有用户在当前任务中明确要求添加测试，才允许新增或扩写测试，包括测试文件、suite、用例、断言、
@@ -13,74 +16,43 @@
 - 优先运行直接覆盖变更风险的检查，影响范围不明确时再扩大；只修改已授权的测试与 fixture，不把
   未运行、失败或环境阻塞的检查写成通过。
 
-## 测试与工程文件组织
+## 工程与资源
 
-- 测试目录按领域对应源码模块，Swift 测试以 `Easydict/Swift/` 为映射根，例如 `Service/OpenAI/`
-  对应 `EasydictTests/Service/OpenAI/`；跨模块测试按主要业务归属放置，现有目录按任务范围渐进调整。
-- 每个测试文件聚焦一个主要被测类型或行为领域，最多声明一个 `@Suite`；接近文件规模限制时按职责
-  拆分 suite 和 fixture，保留原有覆盖和标签、actor 隔离、共享状态恢复、串行边界。独立 suite 的
-  `.serialized` 不提供跨 suite 串行保证。
-- 单文件 helper 保持局部，同领域共享工具就近放置，跨目录复用的 fixture 或工具放入
-  `EasydictTests/Support/<Domain>/`，资源放入对应测试资源目录。
-- 新增、移动或删除由 Xcode 管理的源码文件或运行时资源时，同步
-  `Easydict.xcodeproj/project.pbxproj` 中的 group、文件和 build phase 引用，测试文件同时同步测试
-  target 的 Sources，删除文件不保留悬空引用。仓库治理 Markdown、plan、history、skill、参考资料
-  和 `docs/` 下的公共 Markdown 不需要工程引用，除非作为运行时资源发布。
+- 源码位于 `Easydict/Swift/Focused`，保留测试位于 `EasydictTests`。
+- 增删 Swift 文件时执行 `python3 scripts/focused/generate-project.py`，同步 Xcode group、Sources、
+  Resources 与测试 target 引用。工程源清单必须与 SwiftPM 精简 target 一致，不保留悬空引用。
+- 主 String Catalog 在 `Easydict/App/Localizable.xcstrings`；SwiftPM `.strings` 镜像必须同步。
+- plan、history 和公共 Markdown 不进入运行时资源。
 
 ## 选择验证
 
-根据变更需要证明的结果选择最小且充分的验证，不按变更行数设置硬阈值。
+- 生产源码、资源或依赖实质变化：运行对应 SwiftPM 构建与打包；行为变化运行相关保留测试。
+- 修改 Xcode 构建图时，在完整 Xcode 环境运行 `xcodebuild build/test`；环境无 Xcode 时明确记录阻塞，
+  SwiftPM 构建不能被汇报为 Xcode 验证通过。
+- 包装与玻璃材质变化：运行 Release 打包，`codesign --verify --deep --strict`，检查 `otool -l`
+  的 `LC_BUILD_VERSION`，sdk 字段应 ≥ 26。
+- UI / AX / 剪贴板行为需要实际场景检查，不以编译或取消控制单测替代。
+- 每次修改运行 `git diff --check`；JSON / xcstrings 用 `jq -e .`；Shell 用 `bash -n`。
+- SwiftPM 的同一个 `.build` 路径不并发构建；Xcode 构建始终使用 checkout 派生的 agent
+  DerivedData，避免与 IDE 同路径构建。
 
-- 纯治理 Markdown、plan、history、注释，以及不进入 Xcode 构建图的脚本或配置，只运行相应静态
-  检查：Markdown 的格式、相对链接、锚点和规则语义检查。
-- 生产源码、工程/workspace、target、build setting、build phase、依赖、entitlement、Info.plist
-  或运行时资源发生实质变化时，运行覆盖受影响配置的 `xcodebuild build`；修复 bug、修改可测试
-  行为或测试源码及其 target 引用时，运行覆盖相应行为、suite 或方法的 `xcodebuild test`。
-- `xcodebuild build` 只证明构建集成；相同配置的成功测试已覆盖编译，不重复运行 build，测试未覆盖
-  的 Release、Archive、签名或其他配置另行验证。重复运行兼容的测试时先 `build-for-testing`，再
-  用 `test-without-building`，前者本身不构成测试通过证据。
-- 每次变更运行 `git diff --check`；对变更的 `.xcstrings` 或 JSON 运行 `jq -e .`，对变更的 Shell
-  脚本运行 `bash -n`。
-- 并发判据是构建目录而不是构建入口：同一 workspace 与同一 DerivedData 的并发构建，无论来自
-  Xcode IDE 还是 `xcodebuild`，都会互相破坏增量状态和 build database；DerivedData 不同可以并行。
-- 因此 agent 运行 `xcodebuild` 时始终显式指定 `-derivedDataPath`，指向按 checkout 派生、与 Xcode
-  默认目录不相交的 `~/Library/Developer/Xcode/DerivedData/Easydict-Agent/<checkout-id>`；损坏时
-  删除该目录重建，不切换到 Xcode 默认 DerivedData。
-- `xcodebuild test` 会启动同 bundle id 的 `Easydict-debug.app` 测试宿主，不要与 Xcode 的 Run/Test
-  同时运行；构建与 Archive 不受此限制。
 ## 常用命令
 
 ```bash
-# 每个 checkout 一个 agent 专用 DerivedData，与 Xcode 默认目录互不相交
-set -o pipefail
-checkout_id="$(git rev-parse --show-toplevel | sed -e "s|^$HOME/||" -e 's|^\.||' -e 's|/|_|g')"
-agent_dd="$HOME/Library/Developer/Xcode/DerivedData/Easydict-Agent/$checkout_id"
-
-# 构建
-xcodebuild build \
-  -workspace Easydict.xcworkspace \
-  -scheme Easydict \
-  -derivedDataPath "$agent_dd" | xcbeautify
-
-# 运行测试
-xcodebuild test \
-  -workspace Easydict.xcworkspace \
-  -scheme Easydict \
-  -derivedDataPath "$agent_dd" | xcbeautify
-
-# 构建可复用的测试产物
-xcodebuild build-for-testing \
-  -workspace Easydict.xcworkspace \
-  -scheme Easydict \
-  -derivedDataPath "$agent_dd" | xcbeautify
-
-# 复用已构建产物运行指定 suite 或方法，-only-testing 支持 <Suite> 与 <Suite>/<test>
-xcodebuild test-without-building \
-  -workspace Easydict.xcworkspace \
-  -scheme Easydict \
-  -derivedDataPath "$agent_dd" \
-  -only-testing:EasydictTests/UtilityFunctionsTests | xcbeautify
+scripts/focused/package-app.sh release
+scripts/focused/run-tests.sh
+python3 scripts/focused/generate-project.py
 ```
 
-`xcbeautify` 依赖 `pipefail` 才能保留 `xcodebuild` 的真实退出状态。重建时只删除当前 checkout 的
-`agent_dd`，不动 Xcode 默认目录或其他 checkout。
+完整 Xcode 环境：
+
+```bash
+set -o pipefail
+checkout_id="$(git rev-parse --show-toplevel | sed -e "s|$HOME/||" -e 's|/|_|g')"
+agent_dd="$HOME/Library/Developer/Xcode/DerivedData/Easydict-Agent/$checkout_id"
+xcodebuild build -workspace Easydict.xcworkspace -scheme Easydict -derivedDataPath "$agent_dd"
+xcodebuild test -workspace Easydict.xcworkspace -scheme Easydict -derivedDataPath "$agent_dd"
+```
+
+CLT 环境下打包脚本优先选已安装的 macOS 26 SDK，避免 macOS 27 SDK 依赖的 SwiftUI 宏插件缺失。
+测试脚本按 developer 目录解析 Swift Testing 宏插件。不改变用户全局工具链设置。

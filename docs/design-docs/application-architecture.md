@@ -1,50 +1,42 @@
-# Easydict 应用架构
+# Easydict Lite 应用架构
 
-Easydict 是一款 macOS 词典和翻译应用，支持直接查词、文本翻译、划词翻译、
-OCR 截图翻译，以及多个翻译或 AI 服务提供商。
-
-应用支持 macOS 13.0 及更高版本。新的 UI 组件使用 SwiftUI；在平台集成需要时，
-保留现有的 AppKit 和 Objective-C 边界。
+精简分支只支持鼠标划词与显式剪贴板翻译，使用一个活动的 OpenAI 兼容 / DeepSeek 通道。
+最低系统版本为 macOS 26；旧设计文档记录原项目历史，不代表当前构建图。
 
 ## 源码布局
 
 ```text
-Easydict/
-├── App/                         # 入口、资源、plist、本地化
-├── Swift/
-│   ├── Feature/                 # 产品功能和操作流程
-│   ├── Model/                   # 共享数据模型
-│   ├── Service/                 # 翻译和 AI 服务提供商
-│   ├── Utility/                 # 事件监视器和跨功能辅助工具
-│   └── View/                    # 共享 SwiftUI 和面向 AppKit 的视图
-└── objc/                        # 遗留 Objective-C 实现
-
-EasydictTests/                   # 单元测试和行为测试
-Easydict.xcodeproj/              # Xcode 工程和共享 scheme
-Easydict.xcworkspace/            # workspace 和 SwiftPM 集成
-.agents/skills/release-easydict/ # 发布、签名、打包和 appcast 流程
+Easydict/Swift/Focused/
+├── App/          # 入口、菜单栏、生命周期
+├── Model/        # 查询快照、语言、偏好、通道配置
+├── Selection/    # AX-only 取词与被动鼠标事件
+├── Service/      # Prompt、共享 API 传输、SSE、Keychain、请求协调
+├── Utility/      # 本地化、保留的节流与任务取消控制
+├── View/         # 查询图标、单结果面板、紧凑设置
+└── Resources/    # SwiftPM 英文与简体中文字符串
 ```
 
 ## 运行时边界
 
-- 应用入口和共享状态位于 `Easydict/App` 及相关的 Swift 功能模块中。
-- 翻译服务提供商在 `Easydict/Swift/Service` 下实现特定服务的请求和响应解析。
-- 划词、快捷键、截图和操作路由属于功能模块；可复用的事件以及
-  Foundation/AppKit 辅助工具放在 `Utility` 下。
-- Easydict 自主管理的本地文件通过 `Utility/AppPathManager` 统一定位；目录布局、迁移和日志导出
-  边界见 [`app-path-management.md`](app-path-management.md)。
-- Objective-C 代码仍是遗留边界。新的 UI 和产品组件使用 SwiftUI，除非现有的
-  AppKit 或 Objective-C 集成要求使用其他边界。
-- 测试应在最窄的稳定边界验证具体行为，避免与视图实现细节耦合。
+- `MouseSelectionMonitor` 仅监听鼠标事件，在后台读取目标进程暴露的选中文本；不发送键盘事件、不
+  执行 AppleScript、不触发菜单复制，也不监视剪贴板。捕获后只显示图标，点击才发请求。
+- 剪贴板入口显式读取一次，形成不可变原文快照；重试使用该快照。唯一的剪贴板写入入口是 Copy result。
+- `LookupController` 在 MainActor 上拥有当前请求 ID 和 UI 状态，取消旧请求并丢弃过期响应；保留
+  `OpenAIStreamTaskControl` 的线程安全任务取消机制。
+- `LLMClient` 使用 Alamofire async 数据流统一读取 JSON / SSE，按字节缓冲完整行后解码 UTF-8，
+  对输入、响应与 SSE 单事件设置明确资源限制。不静默截断原文或自动分块。
+- `PromptBuilder` 保留翻译、查词、句子分析和 few-shot 示例，剥离旧服务/UI 全局状态。自定义
+  Prompt 变量只替换模板中的 token，插入原文不参与递归替换。
+- `ResultPanelController` 只有一个窗口，显示不夺焦点，用户点击后允许文本选择；使用公开
+  `NSGlassEffectView`。无私有 selector、屏幕采样、WebKit 或 OCR 资源。
+- 偏好通过 Defaults 保存，密钥通过独立 Keychain service 保存；bundle ID `org.easydict.focused`
+  与原应用隔离，无遥测、原项目更新 feed 或自动外部通知。
 
 ## 构建与验证边界
 
-主要的 Xcode 入口是使用 `Easydict` scheme 的 `Easydict.xcworkspace`。构建和
-测试的触发条件与命令位于 `../agents/build-and-test.md`；本文记录架构，不重复
-命令矩阵。
+SwiftPM 与生成的 Xcode 工程包含相同的精简 Swift 源码。构建、打包与验证命令见
+[`build-and-test.md`](../agents/build-and-test.md)。Xcode 入口仍为 `Easydict.xcworkspace` /
+`Easydict` scheme，已移除 CocoaPods 和旧源码引用。
 
-## 文档边界
-
-- Agent 内部规则：`../agents/`。
-- 公共英文和中文指南：`../user-docs/en/` 和 `../user-docs/zh/`。
-- 当前任务计划和已完成工作记录：`../exec-plans/` 和 `../histories/`。
+保留的两个测试 suite 覆盖节流和任务取消，不能替代新网络/选择/UI 路径的场景验证。辅助功能
+权限、真实 API、焦点、多屏、长时间运行和睡眠唤醒必须在目标环境实际检查。
