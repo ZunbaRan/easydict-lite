@@ -8,7 +8,7 @@ extension PromptBuilder {
 
         var prompt = ""
 
-        
+
         var pronunciation = "Pronunciation"
         var tense = "Tense"
         var translationTitle = "Translation"

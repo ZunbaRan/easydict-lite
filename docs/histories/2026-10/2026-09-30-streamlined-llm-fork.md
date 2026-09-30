@@ -1,4 +1,4 @@
-## 2026-09-30 | 任务：建立精简 LLM 划词与剪贴板翻译分支
+## 2026-10-01 | 任务：建立精简 LLM 划词与剪贴板翻译分支
 
 **Links:** [执行计划](../../exec-plans/completed/2026-09/2026-09-30-streamlined-llm-fork.md)
 
@@ -48,7 +48,9 @@ Liquid Glass。用户从分析转为执行并明确要求完成目标；不进�
 - `scripts/focused/run-tests.sh`：8 tests / 2 suites 全部通过，覆盖节流、安装前取消、替换请求取消和
   过期请求完成不影响新请求。未新增或扩写测试；这些断言不覆盖新的 AX / 剪贴板 / 网络 / UI 路径。
 - `codesign --verify --deep --strict`：通过；`otool -l`：Release `minos 26.0 / sdk 26.5`。
-- `plutil -lint`、`jq -e .`、`bash -n`、`git diff --check`：通过。
+- `plutil -lint`、`jq -e .`、`bash -n`：通过。最初 `git diff --check` 未覆盖未跟踪的新文件；
+  暂存后的检查发现三个空白问题，主提交步骤错误地继续执行。随后用独立本地提交清理，最终
+  staged / 基线整体 diff 检查通过；未 amend 主提交。清理仅改变空白，语义 diff 为空。
 - 工程与资源静态核对：SwiftPM / Xcode 的 23 个 Swift 源文件一致，无悬空文件引用；两种语言的
   `.strings` 与主 String Catalog 一致，无缺失的静态 UI key；依赖锁定 3 个运行时 Swift 包。
 - 手动启动检查：最终 Release 进程启动成功。旧 smoke 进程退出后第一次 LaunchServices 调用返回
@@ -56,7 +58,7 @@ Liquid Glass。用户从分析转为执行并明确要求完成目标；不进�
 - `review`：读取完整 raw diff、删除清单、未跟踪文件与核心源码/调用者/现有测试。最终生产快照
   含 1309 个候选路径，manifest SHA-256 为
   `4fe4a75ab892e5766627306cfb1b4cdd44df3b95a66ce55cf99584815c4f3a02`。
-  之后只有公开说明和本记录/计划更新，增量已核对。
+  之后有三处空白清理、公开说明和本记录/计划更新，增量已核对。
 - Review finding 修复与复验：完整回答尾部 `<` 丢失、缺少标准原生 Copy/Paste 菜单、重定向目的地
   越过初始 URL 约束、响应生产者缓冲先于消费上限。修改后重新构建、运行现有测试与审查，无遗留
   可证实 finding。当前职责分离足以支撑所选范围，不需恢复广泛的旧窗口/服务基础设施。
@@ -74,7 +76,7 @@ Liquid Glass。用户从分析转为执行并明确要求完成目标；不进�
 - `Package.swift`、`Package.resolved`、`.swift-version`、`Easydict.xcodeproj/`、`Easydict.xcworkspace/`
 - `scripts/focused/`、移除的旧源码/测试资源/Pods/CLI/更新 feed/通知 workflow
 - `README.md`、`README_ZH.md`、`CONTRIBUTING.md`、`AGENTS.md`、当前架构/构建/本地化规则和使用指南
-- `docs/exec-plans/completed/2026-09/2026-09-30-streamlined-llm-fork.md`、本 history
+- `docs/exec-plans/completed/2026-09/2026-09-30-streamlined-llm-fork.md`、本 history（按完成月份归档）
 
 ### 后续事项
 

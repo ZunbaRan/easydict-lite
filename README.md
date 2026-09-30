@@ -35,7 +35,7 @@ Selection uses only text exposed by Accessibility. Some applications, PDF viewer
 
 Input is sent in full up to an explicit 2 MiB limit. Model context limits vary; API errors are displayed rather than silently truncating input. Responses are bounded at 8 MiB. Output-limit and interrupted-stream errors preserve partial answers. Stop cancels the local request; provider-side billing or generation may continue.
 
-The retained eight task-control and throttling tests pass. New selection, clipboard, transport, and UI workflows do not yet have dedicated regression suites. Full Xcode builds, real provider calls, Accessibility selection, floating-panel focus/visual checks, sleep/wake, and extended-use checks remain to be verified in the target environment; see the [task history](docs/histories/2026-09/2026-09-30-streamlined-llm-fork.md) for actual evidence.
+The retained eight task-control and throttling tests pass. New selection, clipboard, transport, and UI workflows do not yet have dedicated regression suites. Full Xcode builds, real provider calls, Accessibility selection, floating-panel focus/visual checks, sleep/wake, and extended-use checks remain to be verified in the target environment; see the [task history](docs/histories/2026-10/2026-09-30-streamlined-llm-fork.md) for actual evidence.
 
 ## Development
 

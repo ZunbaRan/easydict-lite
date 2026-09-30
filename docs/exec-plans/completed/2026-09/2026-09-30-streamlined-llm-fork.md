@@ -20,7 +20,7 @@
 
 - 目标结果：可构建和打包的原生 macOS 精简应用，使用单一 Liquid Glass 结果面板。
 - 允许修改路径：应用源码及资源、测试构建引用、工程和依赖、构建脚本、公开说明、规则中的架构与构建事实、plan/history。
-- 同任务 history：`docs/histories/2026-09/2026-09-30-streamlined-llm-fork.md`
+- 同任务 history：`docs/histories/2026-10/2026-09-30-streamlined-llm-fork.md`
 - 用户限制：不保留全局快捷键；剪贴板翻译是必需功能；不 push、不创建远程 fork/PR、不发布。
 - 非目标：OCR、音频、本地词典、第三方非兼容 API、文本替换、浏览器脚本、键盘模拟、遥测。
 - 验收标准：仅两种入口和两类 API 通道；用户显式 Copy 之外不修改剪贴板；取消和过期响应隔离；长文本不静默截断；单面板与必要设置；移除旧构建图和依赖。
@@ -72,4 +72,4 @@
 - 可用环境的构建、保留测试、静态校验通过；环境与人工验证限制如实记录。
 - 适用 review 完成，有效 finding 修复并复验；history 与计划归档完成，本地提交核验。
 
-完成记录见 [history](../../../histories/2026-09/2026-09-30-streamlined-llm-fork.md)。
+完成记录见 [history](../../../histories/2026-10/2026-09-30-streamlined-llm-fork.md)。

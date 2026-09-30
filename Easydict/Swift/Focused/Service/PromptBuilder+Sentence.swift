@@ -6,7 +6,7 @@ extension PromptBuilder {
     func sentenceMessages(_ chatQuery: ChatQueryParam) -> [ChatMessage] {
         let (sentence, sourceLanguage, targetLanguage, _, enableSystemPrompt) = chatQuery.unpack()
 
-        
+
         var prompt = ""
         var keyWords = "Key Words"
         var grammarParse = "Grammar Parsing"
