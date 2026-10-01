@@ -45,7 +45,7 @@ resources = [file_reference(Path(path), kind) for path, kind in [
     ("Easydict/App/Localizable.xcstrings", "text.json.xcstrings"),
     ("Easydict/App/AppIcon.icns", "image.icns"),
 ]]
-app_product = add("app-product", "PBXFileReference", explicitFileType="wrapper.application", path="Easydict Lite.app", sourceTree="BUILT_PRODUCTS_DIR")
+app_product = add("app-product", "PBXFileReference", explicitFileType="wrapper.application", path="easydict-lite.app", sourceTree="BUILT_PRODUCTS_DIR")
 test_product = add("test-product", "PBXFileReference", explicitFileType="wrapper.cfbundle", path="EasydictTests.xctest", sourceTree="BUILT_PRODUCTS_DIR")
 packages, products, links = [], [], []
 for name, url, version in [
@@ -84,7 +84,7 @@ def configurations(scope, extra):
 
 
 app_config = configurations("app", {
-    "PRODUCT_NAME": "Easydict Lite", "PRODUCT_MODULE_NAME": "Easydict", "EXECUTABLE_NAME": "Easydict",
+    "PRODUCT_NAME": "easydict-lite", "PRODUCT_MODULE_NAME": "Easydict", "EXECUTABLE_NAME": "easydict-lite",
     "PRODUCT_BUNDLE_IDENTIFIER": "org.easydict.focused", "INFOPLIST_FILE": "Easydict/App/Info.plist",
     "GENERATE_INFOPLIST_FILE": "NO", "ENABLE_APP_SANDBOX": "NO", "SWIFT_EMIT_LOC_STRINGS": "NO",
     "COMBINE_HIDPI_IMAGES": "YES",
@@ -92,9 +92,9 @@ app_config = configurations("app", {
 test_config = configurations("tests", {
     "PRODUCT_NAME": "EasydictTests", "PRODUCT_BUNDLE_IDENTIFIER": "org.easydict.focused.tests",
     "GENERATE_INFOPLIST_FILE": "YES", "BUNDLE_LOADER": "$(TEST_HOST)",
-    "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/Easydict Lite.app/Contents/MacOS/Easydict",
+    "TEST_HOST": "$(BUILT_PRODUCTS_DIR)/easydict-lite.app/Contents/MacOS/easydict-lite",
 })
-add("app-target", "PBXNativeTarget", name="Easydict", productName="Easydict Lite", productReference=app_product,
+add("app-target", "PBXNativeTarget", name="Easydict", productName="easydict-lite", productReference=app_product,
     productType="com.apple.product-type.application", buildConfigurationList=app_config,
     buildPhases=[app_sources, frameworks, app_resources], dependencies=[], buildRules=[], packageProductDependencies=products)
 test_id = add("test-target", "PBXNativeTarget", name="EasydictTests", productName="EasydictTests", productReference=test_product,
@@ -118,7 +118,7 @@ def reference(key, name, product):
     return f'<BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="{key}" BuildableName="{product}" BlueprintName="{name}" ReferencedContainer="container:Easydict.xcodeproj"/>'
 
 
-app_ref = reference(app_id, "Easydict", "Easydict Lite.app")
+app_ref = reference(app_id, "Easydict", "easydict-lite.app")
 test_ref = reference(test_id, "EasydictTests", "EasydictTests.xctest")
 (scheme_dir / "Easydict.xcscheme").write_text(f'''<?xml version="1.0" encoding="UTF-8"?>
 <Scheme LastUpgradeVersion="2600" version="1.3">

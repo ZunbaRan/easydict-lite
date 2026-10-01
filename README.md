@@ -1,4 +1,4 @@
-# Easydict Lite
+# easydict-lite
 
 A focused local fork of [Easydict](https://github.com/tisfeng/Easydict) for **mouse selection and explicit clipboard translation** using an OpenAI-compatible LLM API or DeepSeek.
 
@@ -21,9 +21,11 @@ Requires macOS 26+ and Swift 6.2+ with a macOS 26 or newer SDK. Xcode is optiona
 
 ```bash
 scripts/focused/package-app.sh release
-open "dist/Easydict Lite.app"
+open "dist/easydict-lite.app"
 scripts/focused/run-tests.sh
 ```
+
+The script also creates `dist/easydict-lite.zip`. Move `easydict-lite.app` to Applications to keep it alongside the original Easydict.
 
 The packaging script selects an installed macOS 26 SDK on Command Line Tools to avoid missing SwiftUI macro plugins in the macOS 27 CLT SDK. It records the actual SDK version for Liquid Glass and applies a stable local ad-hoc signature. It does not install over Easydict. The fork uses bundle ID `org.easydict.focused` and separate preferences and Keychain entries.
 

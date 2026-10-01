@@ -1,4 +1,4 @@
-# Easydict Lite 使用指南
+# easydict-lite 使用指南
 
 ## API 配置
 
@@ -29,7 +29,7 @@
 ```bash
 scripts/focused/package-app.sh release
 scripts/focused/run-tests.sh
-open "dist/Easydict Lite.app"
+open "dist/easydict-lite.app"
 ```
 
 要求 macOS 26+、Swift 6.2+、macOS 26+ SDK。Xcode 使用 `Easydict.xcworkspace` / `Easydict`。修改源码清单后执行 `python3 scripts/focused/generate-project.py` 更新工程引用。

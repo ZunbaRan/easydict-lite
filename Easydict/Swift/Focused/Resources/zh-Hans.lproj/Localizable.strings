@@ -23,7 +23,7 @@
 "focused.api.test" = "测试连接";
 "focused.api.testing" = "正在测试连接…";
 "focused.api.thinking" = "DeepSeek 思考模式";
-"focused.app.name" = "Easydict Lite";
+"focused.app.name" = "easydict-lite";
 "focused.edit.copy" = "复制";
 "focused.edit.cut" = "剪切";
 "focused.edit.paste" = "粘贴";
@@ -46,7 +46,7 @@
 "focused.language.second" = "第二语言";
 "focused.menu.clipboard" = "剪贴板翻译";
 "focused.menu.edit" = "编辑";
-"focused.menu.quit" = "退出 Easydict Lite";
+"focused.menu.quit" = "退出 easydict-lite";
 "focused.menu.settings" = "设置…";
 "focused.mode.dictionary" = "查单词";
 "focused.mode.sentence" = "句子分析";

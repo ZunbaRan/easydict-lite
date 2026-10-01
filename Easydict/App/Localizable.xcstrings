@@ -406,13 +406,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Easydict Lite"
+            "value": "easydict-lite"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "Easydict Lite"
+            "value": "easydict-lite"
           }
         }
       }
@@ -779,13 +779,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Quit Easydict Lite"
+            "value": "Quit easydict-lite"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "退出 Easydict Lite"
+            "value": "退出 easydict-lite"
           }
         }
       }

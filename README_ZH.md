@@ -1,4 +1,4 @@
-# Easydict Lite
+# easydict-lite
 
 基于 [Easydict](https://github.com/tisfeng/Easydict) 的精简本地分支，仅保留 **鼠标划词、显式剪贴板翻译、OpenAI 兼容 API 和 DeepSeek**。
 
@@ -21,9 +21,11 @@
 
 ```bash
 scripts/focused/package-app.sh release
-open "dist/Easydict Lite.app"
+open "dist/easydict-lite.app"
 scripts/focused/run-tests.sh
 ```
+
+脚本还会生成 `dist/easydict-lite.zip`。可将 `easydict-lite.app` 移入 Applications，与原 Easydict 并存。
 
 脚本会在 Command Line Tools 环境优先使用已安装的 macOS 26 SDK，绕过 macOS 27 CLT SDK 缺少 SwiftUI 宏插件的问题。打包时记录真实 SDK 版本并使用稳定的本地 ad-hoc 签名，不覆盖已安装 Easydict。分支使用独立 bundle ID `org.easydict.focused`、偏好和钥匙串条目。
 

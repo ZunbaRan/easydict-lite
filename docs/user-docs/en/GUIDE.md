@@ -1,4 +1,4 @@
-# Easydict Lite guide
+# easydict-lite guide
 
 ## Configure the API
 
@@ -29,7 +29,7 @@ Built-in prompt examples are retained. A custom prompt replaces the built-ins an
 ```bash
 scripts/focused/package-app.sh release
 scripts/focused/run-tests.sh
-open "dist/Easydict Lite.app"
+open "dist/easydict-lite.app"
 ```
 
 Requirements: macOS 26+, Swift 6.2+, macOS 26+ SDK. For Xcode use `Easydict.xcworkspace` / `Easydict`. Regenerate file references with `python3 scripts/focused/generate-project.py` after source inventory changes.

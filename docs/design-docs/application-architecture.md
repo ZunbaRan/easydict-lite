@@ -1,4 +1,4 @@
-# Easydict Lite 应用架构
+# easydict-lite 应用架构
 
 精简分支只支持鼠标划词与显式剪贴板翻译，使用一个活动的 OpenAI 兼容 / DeepSeek 通道。
 最低系统版本为 macOS 26；旧设计文档记录原项目历史，不代表当前构建图。

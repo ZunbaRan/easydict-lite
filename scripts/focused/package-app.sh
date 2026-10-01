@@ -16,9 +16,9 @@ fi
 swift build --configuration "$focused_configuration" --sdk "$focused_sdk_path" -j 4 \
     -Xlinker -platform_version -Xlinker macos -Xlinker 26.0 -Xlinker "$focused_sdk"
 focused_bin="$(swift build --configuration "$focused_configuration" --show-bin-path)"
-focused_app="$PWD/dist/Easydict Lite.app"
+focused_app="$PWD/dist/easydict-lite.app"
 mkdir -p "$focused_app/Contents/MacOS" "$focused_app/Contents/Resources"
-cp "$focused_bin/Easydict" "$focused_app/Contents/MacOS/Easydict"
+cp "$focused_bin/easydict-lite" "$focused_app/Contents/MacOS/easydict-lite"
 cp Easydict/App/Info.plist "$focused_app/Contents/Info.plist"
 cp Easydict/App/AppIcon.icns "$focused_app/Contents/Resources/AppIcon.icns"
 for focused_resource in "$focused_bin"/*.bundle; do
@@ -31,4 +31,6 @@ done
 codesign --force --sign - --identifier org.easydict.focused \
     --requirements '=designated => identifier "org.easydict.focused"' "$focused_app"
 codesign --verify --deep --strict "$focused_app"
-printf 'Built %s\n' "$focused_app"
+focused_archive="$PWD/dist/easydict-lite.zip"
+ditto -c -k --sequesterRsrc --keepParent "$focused_app" "$focused_archive"
+printf 'Built %s\nPackaged %s\n' "$focused_app" "$focused_archive"

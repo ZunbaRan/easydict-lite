@@ -23,7 +23,7 @@
 "focused.api.test" = "Test connection";
 "focused.api.testing" = "Testing connection…";
 "focused.api.thinking" = "DeepSeek thinking mode";
-"focused.app.name" = "Easydict Lite";
+"focused.app.name" = "easydict-lite";
 "focused.edit.copy" = "Copy";
 "focused.edit.cut" = "Cut";
 "focused.edit.paste" = "Paste";
@@ -46,7 +46,7 @@
 "focused.language.second" = "Second language";
 "focused.menu.clipboard" = "Clipboard Translation";
 "focused.menu.edit" = "Edit";
-"focused.menu.quit" = "Quit Easydict Lite";
+"focused.menu.quit" = "Quit easydict-lite";
 "focused.menu.settings" = "Settings…";
 "focused.mode.dictionary" = "Word Lookup";
 "focused.mode.sentence" = "Sentence Analysis";

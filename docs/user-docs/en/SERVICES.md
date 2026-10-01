@@ -1,6 +1,6 @@
 # API channels
 
-Easydict Lite has two channels, with one active channel per lookup:
+easydict-lite has two channels, with one active channel per lookup:
 
 | Channel | Configuration |
 | --- | --- |

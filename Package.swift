@@ -5,7 +5,7 @@ let package = Package(
     name: "Easydict",
     defaultLocalization: "en",
     platforms: [.macOS(.v26)],
-    products: [.executable(name: "Easydict", targets: ["Easydict"])],
+    products: [.executable(name: "easydict-lite", targets: ["Easydict"])],
     dependencies: [
         .package(url: "https://github.com/Alamofire/Alamofire.git", exact: "5.12.2"),
         .package(url: "https://github.com/sindresorhus/Defaults.git", exact: "8.2.0"),
