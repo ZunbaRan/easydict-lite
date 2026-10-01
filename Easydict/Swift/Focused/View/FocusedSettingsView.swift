@@ -76,8 +76,15 @@ struct FocusedSettingsView: View {
                     Toggle(AppStrings.text("focused.window.pin"), isOn: $pinned)
                     Toggle(AppStrings.text("focused.window.all_spaces"), isOn: $allSpaces)
                     Toggle(AppStrings.text("focused.window.remember_position"), isOn: $rememberPosition)
-                    Slider(value: $maximumHeight, in: 0.35 ... 0.9) {
-                        Text(String(format: AppStrings.text("focused.window.maximum_height"), Int(maximumHeight * 100)))
+                    HStack {
+                        // Render the changing percentage outside the native slider label.
+                        Text(maximumHeightLabel)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .accessibilityHidden(true)
+                        Slider(value: $maximumHeight, in: 0.35 ... 0.9, step: 0.01)
+                            .labelsHidden()
+                            .accessibilityLabel(maximumHeightLabel)
+                            .frame(maxWidth: .infinity)
                     }
                     Text(AppStrings.text("focused.window.note")).font(.caption).foregroundStyle(.secondary)
                 }
@@ -90,6 +97,10 @@ struct FocusedSettingsView: View {
             }.formStyle(.grouped)
                 .tabItem { Label(AppStrings.text("focused.settings.window"), systemSymbol: .macwindow) }
         }.padding(12).frame(width: 640, height: 690)
+    }
+
+    private var maximumHeightLabel: String {
+        String(format: AppStrings.text("focused.window.maximum_height"), Int((maximumHeight * 100).rounded()))
     }
 
     private func languagePicker(_ key: String, selection: Binding<String>, allowAuto: Bool = false) -> some View {

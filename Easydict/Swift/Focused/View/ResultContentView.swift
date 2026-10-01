@@ -1,5 +1,6 @@
 // Copyright © 2026 Easydict contributors. GPL-3.0.
 
+import Combine
 import Defaults
 import SFSafeSymbols
 import SwiftUI
@@ -8,7 +9,7 @@ struct ResultContentView: View {
     @ObservedObject var lookup: LookupController
     @ObservedObject var backdrop: BackdropAppearanceController
     let onClose: () -> Void
-    @Default(.focusedPinned) private var pinned
+    @State private var pinned = Defaults[.focusedPinned]
     @State private var showSource = false
 
     var body: some View {
@@ -18,9 +19,23 @@ struct ResultContentView: View {
                 Text(AppStrings.text("focused.app.name")).font(.headline)
                 Spacer()
                 if lookup.isRunning { ProgressView().controlSize(.small) }
-                Button { pinned.toggle() } label: { Image(systemSymbol: pinned ? .pinFill : .pin) }
-                    .help(AppStrings.text("focused.window.pin"))
-                    .accessibilityLabel(AppStrings.text("focused.window.pin"))
+                Button {
+                    // Render the click immediately instead of waiting for asynchronous preference observation.
+                    let nextPinned = !Defaults[.focusedPinned]
+                    pinned = nextPinned
+                    Defaults[.focusedPinned] = nextPinned
+                } label: {
+                    Image(systemSymbol: pinned ? .pinFill : .pin)
+                        .frame(width: 28, height: 28)
+                }
+                .foregroundStyle(pinned ? Color.white : Color.secondary)
+                .background {
+                    RoundedRectangle(cornerRadius: 7).fill(pinned ? Color.accentColor : Color.clear)
+                }
+                .animation(.easeInOut(duration: 0.12), value: pinned)
+                .help(AppStrings.text(pinned ? "focused.window.unpin_action" : "focused.window.pin_action"))
+                .accessibilityLabel(AppStrings.text(pinned ? "focused.window.unpin_action" : "focused.window.pin_action"))
+                .accessibilityAddTraits(pinned ? .isSelected : [])
                 Button(action: onClose) { Image(systemSymbol: .xmark) }
                     .help(AppStrings.text("focused.action.close"))
                     .accessibilityLabel(AppStrings.text("focused.action.close"))
@@ -71,6 +86,11 @@ struct ResultContentView: View {
         .buttonStyle(.borderless)
         .foregroundStyle(.primary)
         .environment(\.colorScheme, backdrop.isDark ? .dark : .light)
+        .onAppear { pinned = Defaults[.focusedPinned] }
+        .onReceive(Defaults.publisher(.focusedPinned).receive(on: DispatchQueue.main)) { _ in
+            // Settings can change the same preference; queued notifications must not restore an older value.
+            pinned = Defaults[.focusedPinned]
+        }
         .onChange(of: lookup.source) { _, _ in showSource = false }
     }
 }

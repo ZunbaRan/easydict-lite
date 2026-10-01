@@ -22,7 +22,8 @@
 "focused.api.temperature_enabled" = "Send temperature parameter";
 "focused.api.test" = "Test connection";
 "focused.api.testing" = "Testing connection…";
-"focused.api.thinking" = "DeepSeek thinking mode";
+"focused.api.thinking" = "DeepSeek thinking for word lookup";
+"focused.api.thinking_note" = "Translation and sentence analysis turn thinking off on DashScope and DeepSeek. Word lookup may use thinking. Other APIs follow their model settings; choose a non-thinking model for sentence translation.";
 "focused.app.name" = "easydict-lite";
 "focused.edit.copy" = "Copy";
 "focused.edit.cut" = "Cut";
@@ -91,4 +92,6 @@
 "focused.window.maximum_height" = "Maximum height: %d%% of screen";
 "focused.window.note" = "One floating panel with native Liquid Glass on macOS 26+. Clipboard translations stay open until you close them. The panel appears without taking focus.";
 "focused.window.pin" = "Keep the result panel open";
+"focused.window.pin_action" = "Pin panel";
 "focused.window.remember_position" = "Remember position until quit";
+"focused.window.unpin_action" = "Unpin panel";

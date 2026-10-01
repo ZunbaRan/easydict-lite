@@ -3,24 +3,53 @@
 import AppKit
 import Defaults
 
-/// Owns one passive mouse monitor; no keyboard tap, clipboard observer, or polling timer.
+/// Owns passive mouse monitors; no keyboard tap, clipboard observer, or polling timer.
 @MainActor
 final class MouseSelectionMonitor {
     var onSelection: ((LookupInput) -> Void)?
     var onDismiss: (() -> Void)?
+    var onExternalClick: ((CGPoint) -> Void)?
 
     private var monitor: Any?
+    private var localMonitor: Any?
+    private var ignoreMouseUp = false
     private var activationObserver: NSObjectProtocol?
     private var readTask: Task<Void, Never>?
     private var generation = UUID()
 
     func start() {
-        guard monitor == nil else { return }
+        guard monitor == nil, localMonitor == nil else { return }
         monitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .leftMouseUp, .rightMouseDown]) { [weak self] event in
             MainActor.assumeIsolated {
-                if event.type == .leftMouseUp { self?.readSelection() }
-                else { self?.invalidateSelection() }
+                guard let self else { return }
+                if event.type == .leftMouseUp && self.ignoreMouseUp {
+                    self.ignoreMouseUp = false
+                    self.cancelPendingRead()
+                    return
+                }
+                if event.type != .leftMouseUp { self.ignoreMouseUp = false }
+                let location = self.screenLocation(of: event)
+                // Nonactivating panels can leave another app frontmost. Never read behind our UI.
+                let windowNumber = NSWindow.windowNumber(at: location, belowWindowWithWindowNumber: 0)
+                if NSApp.windows.contains(where: { $0.isVisible && $0.windowNumber == windowNumber }) {
+                    self.ignoreMouseUp = event.type != .leftMouseUp
+                    self.cancelPendingRead()
+                    return
+                }
+                if event.type == .leftMouseUp { self.readSelection(anchor: location) }
+                else {
+                    self.invalidateSelection()
+                    self.onExternalClick?(location)
+                }
             }
+        }
+        // Pair our mouse-down with any later global mouse-up, including a native window drag.
+        localMonitor = NSEvent.addLocalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] event in
+            MainActor.assumeIsolated {
+                self?.ignoreMouseUp = true
+                self?.cancelPendingRead()
+            }
+            return event
         }
         activationObserver = NSWorkspace.shared.notificationCenter.addObserver(
             forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main
@@ -37,25 +66,37 @@ final class MouseSelectionMonitor {
         invalidateSelection()
         if let monitor { NSEvent.removeMonitor(monitor) }
         monitor = nil
+        if let localMonitor { NSEvent.removeMonitor(localMonitor) }
+        localMonitor = nil
+        ignoreMouseUp = false
         if let activationObserver { NSWorkspace.shared.notificationCenter.removeObserver(activationObserver) }
         activationObserver = nil
     }
 
     private func invalidateSelection() {
-        generation = UUID()
-        readTask?.cancel()
-        readTask = nil
+        cancelPendingRead()
         onDismiss?()
     }
 
-    private func readSelection() {
+    private func cancelPendingRead() {
+        generation = UUID()
+        readTask?.cancel()
+        readTask = nil
+    }
+
+    private func screenLocation(of event: NSEvent) -> CGPoint {
+        guard let location = event.cgEvent?.location else { return NSEvent.mouseLocation }
+        // Quartz starts at the primary display's top-left; AppKit uses its bottom-left.
+        return CGPoint(x: location.x, y: CGDisplayBounds(CGMainDisplayID()).height - location.y)
+    }
+
+    private func readSelection(anchor: CGPoint) {
         invalidateSelection()
         guard Defaults[.focusedSelectionEnabled], AXIsProcessTrusted(),
               let app = NSWorkspace.shared.frontmostApplication,
               app.processIdentifier != ProcessInfo.processInfo.processIdentifier
         else { return }
         let processID = app.processIdentifier
-        let anchor = NSEvent.mouseLocation
         let identifier = generation
         readTask = Task { [weak self] in
             do { try await Task.sleep(for: .milliseconds(140)) } catch { return }

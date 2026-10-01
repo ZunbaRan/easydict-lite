@@ -1,8 +1,10 @@
 # easydict-lite
 
-基于 [Easydict](https://github.com/tisfeng/Easydict) 的精简本地分支，仅保留 **鼠标划词、显式剪贴板翻译、OpenAI 兼容 API 和 DeepSeek**。
+基于 [Easydict](https://github.com/tisfeng/Easydict) 的精简分支，仅保留 **鼠标划词、显式剪贴板翻译、OpenAI 兼容 API 和 DeepSeek**。
 
 [English](README.md) · [使用与构建指南](docs/user-docs/zh/GUIDE.md)
+
+从 [Releases](https://github.com/ZunbaRan/easydict-lite/releases) 下载 macOS 26+ Apple Silicon 构建，解压后将 `easydict-lite.app` 放入 Applications，与 Easydict 并存。预发布包使用 ad-hoc 签名，未公证；首次启动被系统阻止时，可参考 [Apple 的应用打开说明](https://support.apple.com/en-us/102445)。
 
 ## 功能
 
@@ -38,7 +40,7 @@ scripts/focused/run-tests.sh
 
 原文完整发送，超过 2 MiB 时明确报错，不静默截断。模型上下文限制由服务端决定。响应上限为 8 MiB，输出截断或流式中断会保留已接收的结果并提示。停止会取消本地请求，但不保证供应商停止生成或计费。
 
-保留的八个请求取消与节流测试通过。新选择、剪贴板、网络和 UI 路径尚缺专属回归测试。完整 Xcode、真实 API、辅助功能取词、悬浮面板焦点和视觉、睡眠唤醒及长时间使用检查仍需在目标环境验证；实际证据见[任务 history](docs/histories/2026-10/2026-09-30-streamlined-llm-fork.md)。
+保留的八个请求取消与节流测试通过。新选择、剪贴板、网络和 UI 路径尚缺专属回归测试。用户反馈确认已配置 API 请求、固定位置、自动文字对比度和近期面板修复，不代表完整供应商或 UI 覆盖。完整 Xcode、更多供应商、多屏、睡眠唤醒及长时间使用仍未验证；实际证据与边界见[面板任务 history](docs/histories/2026-10/2026-10-01-fix-height-slider-label.md)。
 
 ## 开发
 
@@ -52,4 +54,4 @@ python3 scripts/focused/generate-project.py
 
 ## 许可证与致谢
 
-采用 GPL-3.0，保留 [LICENSE](LICENSE)。基于 tisfeng 及贡献者开发的 Easydict，原项目受 Bob 和 Saladict 启发。保留 Prompt 示例、取消控制和节流实现的原始署名。悬浮面板与背景对比度行为参考 EchoType，使用公开 AppKit 和 ScreenCaptureKit API，不包含私有外观覆盖。
+采用 GPL-3.0，保留 [LICENSE](LICENSE)。基于 tisfeng 及贡献者开发的 Easydict，原项目受 Bob 和 Saladict 启发。保留 Prompt 示例、取消控制和节流实现的原始署名。悬浮面板与背景对比度行为参考 EchoType。常驻活跃玻璃与 EchoType 一样在结果面板内局部使用两个未公开的 AppKit 外观查询，系统升级后需复验；背景采样使用公开 ScreenCaptureKit API。

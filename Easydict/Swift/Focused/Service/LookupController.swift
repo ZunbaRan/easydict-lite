@@ -56,6 +56,9 @@ final class LookupController: ObservableObject {
         let query = ChatQueryParam(text: input.text, sourceLanguage: detected, targetLanguage: target, queryType: mode, enableSystemPrompt: true)
         let customPrompt = Defaults[.focusedCustomPromptEnabled] ? Defaults[.focusedCustomPrompt] : nil
         let messages = PromptBuilder(answerLanguage: first).messages(for: query, customPrompt: customPrompt)
+        // Short sentences can still enter dictionary mode; only recognized single words may think.
+        let word = input.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        let allowThinking = mode == .dictionary && (word.isEnglishWord || word.isChineseWord)
         let current = UUID()
         identifier = current
         taskControl.begin(identifier: current)
@@ -64,7 +67,7 @@ final class LookupController: ObservableObject {
         status = AppStrings.text("focused.status.translating")
         let task = Task { [weak self] in
             do {
-                try await LLMClient().translate(configuration: configuration, messages: messages) { [weak self] delta in
+                try await LLMClient().translate(configuration: configuration, messages: messages, allowThinking: allowThinking) { [weak self] delta in
                     guard let self, self.identifier == current else { return }
                     self.accumulated += delta
                     if self.displayGate.shouldAllow() { self.result = ReasoningFilter.visibleText(self.accumulated, isStreaming: true) }

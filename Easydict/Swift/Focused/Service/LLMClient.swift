@@ -3,7 +3,7 @@
 import Alamofire
 import Foundation
 
-/// The two channels share Chat Completions transport; DeepSeek adds only its thinking switch.
+/// Shared Chat Completions transport with request-level thinking controls for known providers.
 struct LLMClient {
     private static let maximumResponseBytes = 8 * 1024 * 1024
     private static let session: Session = {
@@ -17,10 +17,11 @@ struct LLMClient {
     func translate(
         configuration: APIConfiguration,
         messages: [ChatMessage],
+        allowThinking: Bool,
         onText: @escaping @MainActor (String) -> Void
     ) async throws {
         try Task.checkCancellation()
-        let request = try makeRequest(configuration: configuration, messages: messages)
+        let request = try makeRequest(configuration: configuration, messages: messages, allowThinking: allowThinking)
         // Read both JSON and SSE incrementally so the response-size bound applies before allocation grows.
         // A configured API URL is the destination; never redirect source text or credentials elsewhere.
         let stream = Self.session.streamRequest(request).redirect(using: Redirector(behavior: .doNotFollow))
@@ -97,7 +98,7 @@ struct LLMClient {
         }
     }
 
-    private func makeRequest(configuration: APIConfiguration, messages: [ChatMessage]) throws -> URLRequest {
+    private func makeRequest(configuration: APIConfiguration, messages: [ChatMessage], allowThinking: Bool) throws -> URLRequest {
         let endpoint = configuration.endpoint.trimmingCharacters(in: .whitespacesAndNewlines)
         guard var url = URL(string: endpoint), let host = url.host, url.user == nil, url.password == nil,
               url.scheme == "https" || (url.scheme == "http" && ["localhost", "127.0.0.1", "::1", "[::1]"].contains(host))
@@ -113,11 +114,18 @@ struct LLMClient {
             "messages": messages.map { ["role": $0.role.rawValue, "content": $0.content] },
             "stream": configuration.streaming,
         ]
+        let isDeepSeek = configuration.channel == .deepSeek || host.lowercased() == "api.deepseek.com"
+        let thinkingEnabled = allowThinking && configuration.thinking
         if let temperature = configuration.temperature,
-           !(configuration.channel == .deepSeek && configuration.thinking) {
+           !(isDeepSeek && thinkingEnabled) {
             body["temperature"] = temperature
         }
-        if configuration.channel == .deepSeek { body["thinking"] = ["type": configuration.thinking ? "enabled" : "disabled"] }
+        if isDeepSeek {
+            body["thinking"] = ["type": thinkingEnabled ? "enabled" : "disabled"]
+        } else if !allowThinking && isDashScope(host: host) {
+            // This is a top-level REST field, not the OpenAI SDK's extra_body wrapper.
+            body["enable_thinking"] = false
+        }
         var request = URLRequest(url: url, timeoutInterval: 180)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -125,6 +133,12 @@ struct LLMClient {
         if !configuration.apiKey.isEmpty { request.setValue("Bearer \(configuration.apiKey)", forHTTPHeaderField: "Authorization") }
         request.httpBody = try JSONSerialization.data(withJSONObject: body)
         return request
+    }
+
+    private func isDashScope(host: String) -> Bool {
+        let host = host.lowercased()
+        return ["dashscope.aliyuncs.com", "dashscope-intl.aliyuncs.com", "dashscope-us.aliyuncs.com"].contains(host)
+            || host.hasSuffix(".maas.aliyuncs.com")
     }
 
     private func validate(_ response: HTTPURLResponse?, data: Data) throws {

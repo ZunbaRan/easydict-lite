@@ -53,6 +53,7 @@ struct APISettingsView: View {
                     }
                 }
                 Text(AppStrings.text("focused.api.compatibility_note")).font(.caption).foregroundStyle(.secondary)
+                Text(AppStrings.text("focused.api.thinking_note")).font(.caption).foregroundStyle(.secondary)
             }
         }
         .formStyle(.grouped)
@@ -97,6 +98,7 @@ struct APISettingsView: View {
                 try await LLMClient().translate(
                     configuration: configuration,
                     messages: [.init(role: .user, content: "Reply with the word OK.")],
+                    allowThinking: false,
                     onText: { _ in }
                 )
                 guard validationIdentifier == identifier, !Task.isCancelled else { return }

@@ -1,8 +1,10 @@
 # easydict-lite
 
-A focused local fork of [Easydict](https://github.com/tisfeng/Easydict) for **mouse selection and explicit clipboard translation** using an OpenAI-compatible LLM API or DeepSeek.
+A focused fork of [Easydict](https://github.com/tisfeng/Easydict) for **mouse selection and explicit clipboard translation** using an OpenAI-compatible LLM API or DeepSeek.
 
 [中文](README_ZH.md) · [Usage and build guide](docs/user-docs/en/GUIDE.md)
+
+Download the macOS 26+ Apple Silicon build from [Releases](https://github.com/ZunbaRan/easydict-lite/releases). Extract `easydict-lite.app` and place it in Applications alongside Easydict. The prerelease is ad-hoc signed, not notarized; see [Apple's app-opening guidance](https://support.apple.com/en-us/102445) if macOS blocks the first launch.
 
 ## Features
 
@@ -38,7 +40,7 @@ Selection uses only text exposed by Accessibility. Some applications, PDF viewer
 
 Input is sent in full up to an explicit 2 MiB limit. Model context limits vary; API errors are displayed rather than silently truncating input. Responses are bounded at 8 MiB. Output-limit and interrupted-stream errors preserve partial answers. Stop cancels the local request; provider-side billing or generation may continue.
 
-The retained eight task-control and throttling tests pass. New selection, clipboard, transport, and UI workflows do not yet have dedicated regression suites. Full Xcode builds, real provider calls, Accessibility selection, floating-panel focus/visual checks, sleep/wake, and extended-use checks remain to be verified in the target environment; see the [task history](docs/histories/2026-10/2026-09-30-streamlined-llm-fork.md) for actual evidence.
+The retained eight task-control and throttling tests pass. New selection, clipboard, transport, and UI workflows do not yet have dedicated regression suites. User feedback confirms configured API requests, pinned positioning, adaptive text contrast, and recent panel fixes; this is not exhaustive provider or UI coverage. Full Xcode builds, additional providers, multi-display behavior, sleep/wake, and extended-use checks remain unverified; see the [panel task history](docs/histories/2026-10/2026-10-01-fix-height-slider-label.md) for the evidence and limits.
 
 ## Development
 
@@ -52,4 +54,4 @@ Read [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md). Earlier hist
 
 ## License and attribution
 
-GPL-3.0; retain [LICENSE](LICENSE). Based on Easydict by tisfeng and contributors, originally inspired by Bob and Saladict. Translation prompt examples and the request task-control/throttling implementations retain their original attribution. The floating panel and background contrast take behavioral inspiration from EchoType. The fork uses public AppKit and ScreenCaptureKit APIs, without private appearance overrides.
+GPL-3.0; retain [LICENSE](LICENSE). Based on Easydict by tisfeng and contributors, originally inspired by Bob and Saladict. Translation prompt examples and the request task-control/throttling implementations retain their original attribution. The floating panel and background contrast take behavioral inspiration from EchoType. Persistent active glass uses two undocumented AppKit appearance queries isolated to the result panel, following EchoType's approach; revalidate them after macOS updates. Backdrop sampling uses public ScreenCaptureKit APIs.

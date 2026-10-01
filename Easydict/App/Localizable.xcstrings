@@ -390,13 +390,29 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "DeepSeek thinking mode"
+            "value": "DeepSeek thinking for word lookup"
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "DeepSeek 思考模式"
+            "value": "DeepSeek 查单词时启用思考"
+          }
+        }
+      }
+    },
+    "focused.api.thinking_note": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Translation and sentence analysis turn thinking off on DashScope and DeepSeek. Word lookup may use thinking. Other APIs follow their model settings; choose a non-thinking model for sentence translation."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "翻译和句子分析会关闭 DashScope 与 DeepSeek 的思考模式，查单词可保留思考。其他 API 遵循模型设置；翻译句子时请选择非思考模型。"
           }
         }
       }
@@ -1494,6 +1510,22 @@
         }
       }
     },
+    "focused.window.pin_action": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pin panel"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "固定面板"
+          }
+        }
+      }
+    },
     "focused.window.remember_position": {
       "localizations": {
         "en": {
@@ -1506,6 +1538,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "退出前记住窗口位置"
+          }
+        }
+      }
+    },
+    "focused.window.unpin_action": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unpin panel"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消固定面板"
           }
         }
       }

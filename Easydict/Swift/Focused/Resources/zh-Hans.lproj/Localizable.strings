@@ -22,7 +22,8 @@
 "focused.api.temperature_enabled" = "发送温度参数";
 "focused.api.test" = "测试连接";
 "focused.api.testing" = "正在测试连接…";
-"focused.api.thinking" = "DeepSeek 思考模式";
+"focused.api.thinking" = "DeepSeek 查单词时启用思考";
+"focused.api.thinking_note" = "翻译和句子分析会关闭 DashScope 与 DeepSeek 的思考模式，查单词可保留思考。其他 API 遵循模型设置；翻译句子时请选择非思考模型。";
 "focused.app.name" = "easydict-lite";
 "focused.edit.copy" = "复制";
 "focused.edit.cut" = "剪切";
@@ -91,4 +92,6 @@
 "focused.window.maximum_height" = "最大高度：屏幕的 %d%%";
 "focused.window.note" = "在 macOS 26 及以上使用单一原生 Liquid Glass 悬浮面板。剪贴板翻译保持打开，直到手动关闭。显示时不抢占焦点。";
 "focused.window.pin" = "保持结果面板打开";
+"focused.window.pin_action" = "固定面板";
 "focused.window.remember_position" = "退出前记住窗口位置";
+"focused.window.unpin_action" = "取消固定面板";

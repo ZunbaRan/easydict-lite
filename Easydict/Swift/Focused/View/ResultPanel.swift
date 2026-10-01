@@ -9,6 +9,15 @@ import SwiftUI
 final class ResultPanel: NSPanel {
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
+
+    // AppKit has no public always-active setting for NSGlassEffectView on macOS 26.
+    // Match EchoType's appearance hints only on this panel; do not change real key/main status.
+    // These undocumented selectors need revalidation after macOS updates.
+    @objc(_hasActiveAppearance)
+    private func focusedHasActiveAppearance() -> Bool { true }
+
+    @objc(_hasActiveAppearanceIgnoringKeyFocus)
+    private func focusedHasActiveAppearanceIgnoringKeyFocus() -> Bool { true }
 }
 
 @MainActor
@@ -20,6 +29,7 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
     private var hasShown = false
     private var isClipboardPanel = false
     private var contentSubscription: AnyCancellable?
+    private var resizeAfterMouseRelease: Task<Void, Never>?
 
     init(lookup: LookupController) {
         self.lookup = lookup
@@ -84,13 +94,15 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
     }
 
     func close() {
+        resizeAfterMouseRelease?.cancel()
+        resizeAfterMouseRelease = nil
         backdrop.stop()
         lookup.stop()
         panel.orderOut(nil)
     }
 
-    func dismissOnExternalClick() {
-        if !isClipboardPanel && !Defaults[.focusedPinned] && panel.isVisible { close() }
+    func dismissOnExternalClick(at location: CGPoint) {
+        if !isClipboardPanel && !Defaults[.focusedPinned] && panel.isVisible && !panel.frame.contains(location) { close() }
     }
 
     func windowDidMove(_ notification: Notification) {
@@ -99,6 +111,8 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
     }
     func windowDidResize(_ notification: Notification) { backdrop.frameDidChange() }
     func windowWillClose(_ notification: Notification) {
+        resizeAfterMouseRelease?.cancel()
+        resizeAfterMouseRelease = nil
         backdrop.stop()
         lookup.stop()
     }
@@ -110,6 +124,12 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
     private func resizeForContent() {
         // A pinned frame stays fixed while streamed content changes; overflow remains scrollable.
         guard !Defaults[.focusedPinned], panel.isVisible, let screen = panel.screen else { return }
+        guard resizeAfterMouseRelease == nil else { return }
+        // Keep controls and user drags stable while streaming updates arrive during a mouse press.
+        guard NSEvent.pressedMouseButtons == 0 else {
+            scheduleResizeAfterMouseRelease()
+            return
+        }
         let text = lookup.result + "\n" + (lookup.errorMessage ?? "")
         // Only sizing is capped; the full answer remains selectable in the scroll view.
         let measured = (String(text.prefix(6000)) as NSString).boundingRect(
@@ -124,5 +144,19 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         frame.origin.y = max(visible.minY, frame.maxY - height)
         frame.size.height = height
         panel.setFrame(frame, display: true)
+    }
+
+    private func scheduleResizeAfterMouseRelease() {
+        guard resizeAfterMouseRelease == nil else { return }
+        resizeAfterMouseRelease = Task { [weak self] in
+            while NSEvent.pressedMouseButtons != 0 {
+                do { try await Task.sleep(for: .milliseconds(80)) } catch { return }
+            }
+            // Let AppKit dispatch the release to the pressed control before changing its frame.
+            do { try await Task.sleep(for: .milliseconds(80)) } catch { return }
+            guard !Task.isCancelled, let self else { return }
+            self.resizeAfterMouseRelease = nil
+            self.resizeForContent()
+        }
     }
 }
