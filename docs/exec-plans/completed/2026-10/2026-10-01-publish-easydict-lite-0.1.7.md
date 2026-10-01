@@ -1,6 +1,6 @@
 # Fork and publish easydict-lite 0.1.7
 
-- 状态：active
+- 状态：completed
 - 创建日期：2026-10-01
 - 负责人：Codex
 - 关联 Issue/PR：none
@@ -59,9 +59,10 @@ the latest panel/API changes are uncommitted on `feat/streamlined-llm-fork`.
 
 - [x] Identity, baseline, release tooling, architecture and package checked.
 - [x] Fork created and parent verified.
-- [ ] Candidate review, commit and fork push.
-- [ ] Draft and public asset verification.
-- [ ] Final records, archive, commit/push and clean-state verification.
+- [x] Candidate review, commit and fork push.
+- [x] Draft and public asset verification.
+- [x] Final records archived for the delivery commit; branch push and clean-state checks are the
+  final delivery actions. The tag stays on the source commit.
 
 ## 验证
 
@@ -75,6 +76,27 @@ the latest panel/API changes are uncommitted on `feat/streamlined-llm-fork`.
   files match the prior accepted Review; checked notes, README corrections, archived-plan links,
   ownership, signing/architecture disclosures and explicit fork targets. No evidenced new finding;
   HEAD and empty index stayed unchanged. Source build/test evidence remains applicable.
+- Source commit `0071edb0f748dc8d4f78815843741c408e8a5adc`: message pre/post validation passed;
+  one staging operation exactly matched frozen paths/raw patch. Initial post-commit worktree clean.
+- Fork `main` and `feat/streamlined-llm-fork` received that source commit. Default branch is `main`;
+  annotated `v0.1.7` peels to the source commit; tag object `15b149686f9f6e9ba3253c8c7156174b9352760a`.
+- Draft title `0.1.7`, prerelease flag, notes SHA-256, two asset names/types/sizes/digests matched
+  frozen evidence before publishing. Draft lookup by tag returned 404; authenticated release-list
+  lookup verified the unique draft without recreating it.
+- Public release [0.1.7](https://github.com/ZunbaRan/easydict-lite/releases/tag/v0.1.7), GitHub ID
+  `401003284`, published `2026-10-01T13:39:06Z`. Canonical notes SHA-256
+  `1043915cfa06f1bf2b112c897344aa950f355e0e6ba4a89833a22e4c991fcaf7` matches the public body.
+- Authenticated public metadata verified `draft=false`, `prerelease=true` and both asset digests.
+  Anonymous API lookup was rate-limited (403), while anonymous ZIP and checksum downloads returned
+  200 with exact length/type/SHA-256. ZIP CRC, version/build/ID, extracted signature and executable
+  identity all passed; no authentication was used for the asset downloads.
+- ZIP: 2,928,621 bytes; SHA-256
+  `3a25969996b7a9d923c8d1e1763e29c9bc59293ed7dc08a451637798e8c9a9a5`.
+  Checksum file: 102 bytes; SHA-256
+  `19c06a1ca2c090d27e70c3e09129f396f883d7cb3f6202a40f179add21c354ff`.
+- Fork has zero open Issues and Issues disabled by default; no associated PR/Issue follow-up applies.
+  No ASC run/appcast/DMG workflow was used. Only this task's ignored preparation directory is eligible
+  for cleanup after final delivery; `dist/easydict-lite.app` and ZIP are retained.
 
 ## 完成条件
 
