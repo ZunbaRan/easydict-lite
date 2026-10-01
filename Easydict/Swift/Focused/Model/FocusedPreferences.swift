@@ -15,6 +15,20 @@ enum APIChannel: String, CaseIterable, Defaults.Serializable, Sendable {
     }
 }
 
+enum PanelTextContrast: String, CaseIterable, Defaults.Serializable {
+    case automatic
+    case darkText
+    case lightText
+
+    var title: String {
+        switch self {
+        case .automatic: AppStrings.text("focused.window.contrast.automatic")
+        case .darkText: AppStrings.text("focused.window.contrast.dark_text")
+        case .lightText: AppStrings.text("focused.window.contrast.light_text")
+        }
+    }
+}
+
 extension Defaults.Keys {
     static let focusedChannel = Key<APIChannel>("focused.channel", default: .compatible)
     static let focusedEndpoint = Key<String>("focused.endpoint", default: "https://api.openai.com/v1/chat/completions")
@@ -36,6 +50,7 @@ extension Defaults.Keys {
     static let focusedMaximumHeight = Key<Double>("focused.window.maximum_height", default: 0.7)
     static let focusedAllSpaces = Key<Bool>("focused.window.all_spaces", default: true)
     static let focusedRememberPosition = Key<Bool>("focused.window.remember_position", default: false)
+    static let focusedTextContrast = Key<PanelTextContrast>("focused.window.text_contrast", default: .automatic)
 }
 
 /// Snapshot preferences so changes in Settings affect only the next request.

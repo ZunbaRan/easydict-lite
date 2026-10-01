@@ -52,7 +52,7 @@
 "focused.mode.sentence" = "Sentence Analysis";
 "focused.mode.translation" = "Translation";
 "focused.permissions.granted" = "Accessibility permission granted";
-"focused.permissions.note" = "Clipboard Translation works without accessibility permission. No keyboard shortcuts, Copy simulation, or screen-recording permission are used.";
+"focused.permissions.note" = "Clipboard Translation works without accessibility permission. No keyboard shortcuts or Copy simulation are used. Background text contrast has a separate, optional Screen Recording permission.";
 "focused.permissions.open" = "Open System Settings";
 "focused.permissions.recheck" = "Check again";
 "focused.permissions.required" = "Accessibility permission required for mouse selection";
@@ -79,6 +79,15 @@
 "focused.status.stopped" = "Stopped";
 "focused.status.translating" = "Translating…";
 "focused.window.all_spaces" = "Show on all Spaces";
+"focused.window.contrast.automatic" = "Automatic from background";
+"focused.window.contrast.dark_text" = "Dark text";
+"focused.window.contrast.enable" = "Enable automatic contrast…";
+"focused.window.contrast.granted" = "Screen Recording permission granted";
+"focused.window.contrast.light_text" = "Light text";
+"focused.window.contrast.mode" = "Text color";
+"focused.window.contrast.note" = "Automatic mode checks local background brightness while the panel is visible. Images are never saved or sent to the API. Without permission it follows system appearance; select Dark text or Light text instead. macOS may require restarting the app after granting access.";
+"focused.window.contrast.required" = "Screen Recording permission needed for automatic contrast";
+"focused.window.contrast.title" = "Text contrast";
 "focused.window.maximum_height" = "Maximum height: %d%% of screen";
 "focused.window.note" = "One floating panel with native Liquid Glass on macOS 26+. Clipboard translations stay open until you close them. The panel appears without taking focus.";
 "focused.window.pin" = "Keep the result panel open";

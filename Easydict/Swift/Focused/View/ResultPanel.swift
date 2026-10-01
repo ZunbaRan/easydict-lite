@@ -15,6 +15,7 @@ final class ResultPanel: NSPanel {
 final class ResultPanelController: NSObject, NSWindowDelegate {
     let panel: ResultPanel
     private let lookup: LookupController
+    private let backdrop: BackdropAppearanceController
     private var lastPosition: CGPoint?
     private var hasShown = false
     private var isClipboardPanel = false
@@ -22,10 +23,12 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
 
     init(lookup: LookupController) {
         self.lookup = lookup
-        panel = ResultPanel(
+        let resultPanel = ResultPanel(
             contentRect: NSRect(x: 0, y: 0, width: 440, height: 440),
             styleMask: [.borderless, .nonactivatingPanel, .resizable], backing: .buffered, defer: false
         )
+        panel = resultPanel
+        backdrop = BackdropAppearanceController(panel: resultPanel)
         super.init()
         panel.delegate = self
         panel.isFloatingPanel = true
@@ -42,7 +45,7 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         glass.style = .clear
         // Tint only the material, keeping the text opaque over a gently darkened backdrop.
         glass.tintColor = NSColor.black.withAlphaComponent(0.12)
-        glass.contentView = NSHostingView(rootView: ResultContentView(lookup: lookup, onClose: { [weak self] in self?.close() }))
+        glass.contentView = NSHostingView(rootView: ResultContentView(lookup: lookup, backdrop: backdrop, onClose: { [weak self] in self?.close() }))
         panel.contentView = glass
         contentSubscription = lookup.$result.combineLatest(lookup.$errorMessage)
             .receive(on: DispatchQueue.main)
@@ -55,6 +58,7 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
             // Reuse the frame, including user drags/resizes, across selections, retries, and reopenings.
             updateCollectionBehavior()
             panel.orderFrontRegardless()
+            backdrop.start()
             return
         }
         let screen = NSScreen.screens.first { $0.frame.contains(anchor) } ?? NSScreen.main
@@ -76,9 +80,11 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         hasShown = true
         // Unlike makeKeyAndOrderFront, this does not transfer keyboard input to the lookup app.
         panel.orderFrontRegardless()
+        backdrop.start()
     }
 
     func close() {
+        backdrop.stop()
         lookup.stop()
         panel.orderOut(nil)
     }
@@ -87,8 +93,15 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         if !isClipboardPanel && !Defaults[.focusedPinned] && panel.isVisible { close() }
     }
 
-    func windowDidMove(_ notification: Notification) { lastPosition = panel.frame.origin }
-    func windowWillClose(_ notification: Notification) { lookup.stop() }
+    func windowDidMove(_ notification: Notification) {
+        lastPosition = panel.frame.origin
+        backdrop.frameDidChange()
+    }
+    func windowDidResize(_ notification: Notification) { backdrop.frameDidChange() }
+    func windowWillClose(_ notification: Notification) {
+        backdrop.stop()
+        lookup.stop()
+    }
 
     private func updateCollectionBehavior() {
         panel.collectionBehavior = Defaults[.focusedAllSpaces] ? [.canJoinAllSpaces, .fullScreenAuxiliary] : [.fullScreenAuxiliary]

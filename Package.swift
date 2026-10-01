@@ -17,7 +17,7 @@ let package = Package(
             dependencies: ["Alamofire", "Defaults", "SFSafeSymbols"],
             path: "Easydict/Swift/Focused",
             resources: [.process("Resources")],
-            linkerSettings: [.linkedFramework("AppKit"), .linkedFramework("Security")]
+            linkerSettings: [.linkedFramework("AppKit"), .linkedFramework("Security"), .linkedFramework("ScreenCaptureKit")]
         ),
         .testTarget(
             name: "EasydictTests",

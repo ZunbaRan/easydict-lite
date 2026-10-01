@@ -43,6 +43,7 @@ tests = [file_reference(Path(path), "sourcecode.swift") for path in [
 ]]
 resources = [file_reference(Path(path), kind) for path, kind in [
     ("Easydict/App/Localizable.xcstrings", "text.json.xcstrings"),
+    ("Easydict/App/InfoPlist.xcstrings", "text.json.xcstrings"),
     ("Easydict/App/AppIcon.icns", "image.icns"),
 ]]
 app_product = add("app-product", "PBXFileReference", explicitFileType="wrapper.application", path="easydict-lite.app", sourceTree="BUILT_PRODUCTS_DIR")

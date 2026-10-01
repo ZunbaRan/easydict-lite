@@ -9,11 +9,12 @@ A focused local fork of [Easydict](https://github.com/tisfeng/Easydict) for **mo
 - Select plain text in another application, then click the lookup icon.
 - Translate long clipboard passages from the menu bar. The clipboard is read once and preserved during translation. **Copy result** is an explicit action.
 - One selectable, scrollable Liquid Glass result panel on macOS 26+. Clipboard results stay open until closed.
+- Automatic light/dark text contrast from local backdrop brightness, with optional Screen Recording access and manual text-color choices.
 - OpenAI-compatible Chat Completions and a DeepSeek preset, with separate Keychain credentials.
 - Retained translation, word explanation, sentence analysis, and custom prompts.
 - Cancellation, stale-response isolation, streaming UTF-8 buffering, and explicit incomplete-output errors.
 
-OCR, screenshots, speech, local dictionaries, other service integrations, global shortcut settings, simulated Copy, text replacement, browser scripts, telemetry, and the upstream updater have been removed. Only three runtime Swift package dependencies remain: Alamofire, Defaults, and SFSafeSymbols.
+OCR, screenshot translation, speech, local dictionaries, other service integrations, global shortcut settings, simulated Copy, text replacement, browser scripts, telemetry, and the upstream updater have been removed. Only three runtime Swift package dependencies remain: Alamofire, Defaults, and SFSafeSymbols.
 
 ## Build and run
 
@@ -29,7 +30,7 @@ The script also creates `dist/easydict-lite.zip`. Move `easydict-lite.app` to Ap
 
 The packaging script selects an installed macOS 26 SDK on Command Line Tools to avoid missing SwiftUI macro plugins in the macOS 27 CLT SDK. It records the actual SDK version for Liquid Glass and applies a stable local ad-hoc signature. It does not install over Easydict. The fork uses bundle ID `org.easydict.focused` and separate preferences and Keychain entries.
 
-In Settings, choose a channel, enter a model, and save its API key. **Test connection** sends a short fixed sample. Mouse selection requires Accessibility permission; Clipboard Translation does not. No screen-recording permission is required.
+In Settings, choose a channel, enter a model, and save its API key. **Test connection** sends a short fixed sample. Mouse selection requires Accessibility permission; Clipboard Translation does not. Automatic background text contrast uses optional Screen Recording access, enabled explicitly in Settings → Window. Translation itself does not require this permission. Without access, choose Dark text or Light text; automatic mode follows system appearance until access is granted. Backdrop images are processed locally and never saved or sent to the API.
 
 ## Limits and verification
 
@@ -51,4 +52,4 @@ Read [AGENTS.md](AGENTS.md) and [CONTRIBUTING.md](CONTRIBUTING.md). Earlier hist
 
 ## License and attribution
 
-GPL-3.0; retain [LICENSE](LICENSE). Based on Easydict by tisfeng and contributors, originally inspired by Bob and Saladict. Translation prompt examples and the request task-control/throttling implementations retain their original attribution. The floating panel takes visual inspiration from EchoType and uses public AppKit APIs; EchoType's private appearance overrides and screen sampling are not included.
+GPL-3.0; retain [LICENSE](LICENSE). Based on Easydict by tisfeng and contributors, originally inspired by Bob and Saladict. Translation prompt examples and the request task-control/throttling implementations retain their original attribution. The floating panel and background contrast take behavioral inspiration from EchoType. The fork uses public AppKit and ScreenCaptureKit APIs, without private appearance overrides.

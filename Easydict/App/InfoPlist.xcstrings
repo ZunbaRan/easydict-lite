@@ -1,0 +1,22 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "NSScreenCaptureUsageDescription": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adjust floating-panel text contrast using local background brightness. Images are not saved or sent to the translation API."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通过本地背景亮度调整浮窗文字对比度。图片不会保存或发送给翻译 API。"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

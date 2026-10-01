@@ -6,6 +6,7 @@ import SwiftUI
 
 struct ResultContentView: View {
     @ObservedObject var lookup: LookupController
+    @ObservedObject var backdrop: BackdropAppearanceController
     let onClose: () -> Void
     @Default(.focusedPinned) private var pinned
     @State private var showSource = false
@@ -68,6 +69,8 @@ struct ResultContentView: View {
         }
         .padding(18)
         .buttonStyle(.borderless)
+        .foregroundStyle(.primary)
+        .environment(\.colorScheme, backdrop.isDark ? .dark : .light)
         .onChange(of: lookup.source) { _, _ in showSource = false }
     }
 }

@@ -20,7 +20,9 @@ The input limit is 2 MiB, with an explicit error before sending larger input. Mo
 
 ## Result panel and prompts
 
-The panel appears without taking keyboard focus. Click the result to select text. Copy result writes only the displayed answer; Stop cancels the local request; Retry repeats the captured input, not the latest clipboard. Changing modes explicitly requests translation, word lookup, or sentence analysis. Pin keeps selection results open when clicking another app. The panel grows with results up to its height limit, then scrolls.
+The panel appears without taking keyboard focus. Click the result to select text. Copy result writes only the displayed answer; Stop cancels the local request; Retry repeats the captured input, not the latest clipboard. Changing modes explicitly requests translation, word lookup, or sentence analysis. Pin keeps selection results open and preserves the frame during new lookups. Unpinned panels grow with results up to their height limit; pinned panels keep their size and scroll longer output.
+
+In Settings → Window → Text contrast, Automatic from background selects dark text on light backgrounds and light text on dark backgrounds. Click Enable automatic contrast to grant the optional Screen Recording permission; macOS may require an app restart. Without permission, automatic mode follows system appearance; Dark text and Light text work without capture access. Sampling runs only while the result panel is visible, at most one image request at a time with a 1.5-second refresh interval. It excludes this app, crops to the panel area, and reduces pixels to brightness in local memory. Images are never saved or sent to the translation API. The glass transparency and pinned frame are independent of text contrast.
 
 Built-in prompt examples are retained. A custom prompt replaces the built-ins and supports `${{queryText}}`, `${{queryFromLanguage}}`, `${{queryTargetLanguage}}`, and `${{firstLanguage}}`. Word explanations are LLM output; no dictionary database is queried.
 

@@ -28,7 +28,12 @@ Easydict/Swift/Focused/
 - `PromptBuilder` 保留翻译、查词、句子分析和 few-shot 示例，剥离旧服务/UI 全局状态。自定义
   Prompt 变量只替换模板中的 token，插入原文不参与递归替换。
 - `ResultPanelController` 只有一个窗口，显示不夺焦点，用户点击后允许文本选择；使用公开
-  `NSGlassEffectView`。无私有 selector、屏幕采样、WebKit 或 OCR 资源。
+  `NSGlassEffectView`。无私有 selector、WebKit 或 OCR 资源。
+- `BackdropAppearanceController` 属于 View 边界，使用公开 ScreenCaptureKit 在面板可见时
+  低频读取裁剪背景亮度，排除本应用；一张采样完成前不开始下一张，隐藏时取消，移动或偏好
+  变更使旧结果失效。图片只存在于局部内存，不进入 LookupController、Prompt 或网络层。
+  自动模式需要用户显式授予额外 Screen Recording 权限；无权限跟随系统外观，手动深浅文字
+  不采样。亮暗阈值有滞后，AppKit 外观及 SwiftUI colorScheme 一起更新，frame 和 tint 不变。
 - 偏好通过 Defaults 保存，密钥通过独立 Keychain service 保存；bundle ID `org.easydict.focused`
   与原应用隔离，无遥测、原项目更新 feed 或自动外部通知。
 

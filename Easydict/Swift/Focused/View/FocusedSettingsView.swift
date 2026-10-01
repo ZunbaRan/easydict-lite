@@ -81,6 +81,7 @@ struct FocusedSettingsView: View {
                     }
                     Text(AppStrings.text("focused.window.note")).font(.caption).foregroundStyle(.secondary)
                 }
+                PanelContrastSettingsView()
                 Section(AppStrings.text("focused.settings.about")) {
                     Text(AppStrings.text("focused.app.name")).font(.headline)
                     Text(AppStrings.text("focused.about.description"))

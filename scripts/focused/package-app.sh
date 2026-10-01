@@ -27,6 +27,20 @@ for focused_resource in "$focused_bin"/*.bundle; do
     rm -rf "$focused_app/Contents/Resources/$focused_name"
     cp -R "$focused_resource" "$focused_app/Contents/Resources/"
 done
+# System permission prompts read InfoPlist.strings from the main bundle, not SwiftPM's resource bundle.
+python3 - "$focused_app/Contents/Resources" <<'PY'
+import json
+from pathlib import Path
+import sys
+
+catalog = json.loads(Path('Easydict/App/InfoPlist.xcstrings').read_text())
+for locale in ('en', 'zh-Hans'):
+    destination = Path(sys.argv[1]) / f'{locale}.lproj'
+    destination.mkdir(parents=True, exist_ok=True)
+    lines = [f'{json.dumps(key)} = {json.dumps(entry["localizations"][locale]["stringUnit"]["value"], ensure_ascii=False)};'
+             for key, entry in catalog['strings'].items()]
+    (destination / 'InfoPlist.strings').write_text('\n'.join(lines) + '\n')
+PY
 # Stable local identity helps preserve TCC authorization between local rebuilds.
 codesign --force --sign - --identifier org.easydict.focused \
     --requirements '=designated => identifier "org.easydict.focused"' "$focused_app"
