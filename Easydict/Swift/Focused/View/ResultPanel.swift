@@ -16,6 +16,7 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
     let panel: ResultPanel
     private let lookup: LookupController
     private var lastPosition: CGPoint?
+    private var hasShown = false
     private var isClipboardPanel = false
     private var contentSubscription: AnyCancellable?
 
@@ -38,7 +39,9 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         panel.isReleasedWhenClosed = false
         let glass = NSGlassEffectView()
         glass.cornerRadius = 18
-        glass.style = .regular
+        glass.style = .clear
+        // Tint only the material, keeping the text opaque over a gently darkened backdrop.
+        glass.tintColor = NSColor.black.withAlphaComponent(0.12)
         glass.contentView = NSHostingView(rootView: ResultContentView(lookup: lookup, onClose: { [weak self] in self?.close() }))
         panel.contentView = glass
         contentSubscription = lookup.$result.combineLatest(lookup.$errorMessage)
@@ -48,9 +51,15 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
 
     func show(near anchor: CGPoint, clipboard: Bool) {
         isClipboardPanel = clipboard
+        if Defaults[.focusedPinned], hasShown {
+            // Reuse the frame, including user drags/resizes, across selections, retries, and reopenings.
+            updateCollectionBehavior()
+            panel.orderFrontRegardless()
+            return
+        }
         let screen = NSScreen.screens.first { $0.frame.contains(anchor) } ?? NSScreen.main
         guard let visible = screen?.visibleFrame else { return }
-        panel.collectionBehavior = Defaults[.focusedAllSpaces] ? [.canJoinAllSpaces, .fullScreenAuxiliary] : [.fullScreenAuxiliary]
+        updateCollectionBehavior()
         let height: CGFloat = 260
         panel.maxSize = NSSize(width: visible.width, height: max(260, visible.height * Defaults[.focusedMaximumHeight]))
         let size = NSSize(width: min(440, visible.width), height: height)
@@ -64,6 +73,7 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
             width: size.width, height: size.height
         )
         panel.setFrame(frame, display: true)
+        hasShown = true
         // Unlike makeKeyAndOrderFront, this does not transfer keyboard input to the lookup app.
         panel.orderFrontRegardless()
     }
@@ -80,8 +90,13 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
     func windowDidMove(_ notification: Notification) { lastPosition = panel.frame.origin }
     func windowWillClose(_ notification: Notification) { lookup.stop() }
 
+    private func updateCollectionBehavior() {
+        panel.collectionBehavior = Defaults[.focusedAllSpaces] ? [.canJoinAllSpaces, .fullScreenAuxiliary] : [.fullScreenAuxiliary]
+    }
+
     private func resizeForContent() {
-        guard panel.isVisible, let screen = panel.screen else { return }
+        // A pinned frame stays fixed while streamed content changes; overflow remains scrollable.
+        guard !Defaults[.focusedPinned], panel.isVisible, let screen = panel.screen else { return }
         let text = lookup.result + "\n" + (lookup.errorMessage ?? "")
         // Only sizing is capped; the full answer remains selectable in the scroll view.
         let measured = (String(text.prefix(6000)) as NSString).boundingRect(

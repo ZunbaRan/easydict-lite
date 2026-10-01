@@ -103,7 +103,8 @@ struct LLMClient {
               url.scheme == "https" || (url.scheme == "http" && ["localhost", "127.0.0.1", "::1", "[::1]"].contains(host))
         else { throw LLMError.invalidEndpoint }
         if url.path.isEmpty || url.path == "/" { url.append(path: "v1/chat/completions") }
-        else if url.path.trimmingCharacters(in: CharacterSet(charactersIn: "/")) == "v1" { url.append(path: "chat/completions") }
+        // Compatible base URLs can include a provider prefix, such as /compatible-mode/v1.
+        else if url.path.split(separator: "/").last == "v1" { url.append(path: "chat/completions") }
         let model = configuration.model.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !model.isEmpty else { throw LLMError.missingModel }
         if configuration.channel == .deepSeek && configuration.apiKey.isEmpty { throw LLMError.missingAPIKey }
