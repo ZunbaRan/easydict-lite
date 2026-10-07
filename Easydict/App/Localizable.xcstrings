@@ -49,6 +49,22 @@
         }
       }
     },
+    "focused.action.copied": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copied"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已复制"
+          }
+        }
+      }
+    },
     "focused.action.copy": {
       "localizations": {
         "en": {
@@ -1462,22 +1478,6 @@
         }
       }
     },
-    "focused.window.maximum_height": {
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Maximum height: %d%% of screen"
-          }
-        },
-        "zh-Hans": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "最大高度：屏幕的 %d%%"
-          }
-        }
-      }
-    },
     "focused.window.note": {
       "localizations": {
         "en": {
@@ -1538,6 +1538,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "退出前记住窗口位置"
+          }
+        }
+      }
+    },
+    "focused.window.resize_note": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag an edge or corner to resize. Width and height are remembered automatically, including after restart. Long results scroll without changing the panel size."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "拖动边缘或角落调整大小。宽高自动保存，重启后也会恢复。长结果滚动显示，不改变面板尺寸。"
           }
         }
       }

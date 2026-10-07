@@ -1,7 +1,6 @@
 // Copyright © 2026 Easydict contributors. GPL-3.0.
 
 import AppKit
-import Combine
 import Defaults
 import SwiftUI
 
@@ -28,13 +27,11 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
     private var lastPosition: CGPoint?
     private var hasShown = false
     private var isClipboardPanel = false
-    private var contentSubscription: AnyCancellable?
-    private var resizeAfterMouseRelease: Task<Void, Never>?
 
     init(lookup: LookupController) {
         self.lookup = lookup
         let resultPanel = ResultPanel(
-            contentRect: NSRect(x: 0, y: 0, width: 440, height: 440),
+            contentRect: NSRect(x: 0, y: 0, width: 440, height: 320),
             styleMask: [.borderless, .nonactivatingPanel, .resizable], backing: .buffered, defer: false
         )
         panel = resultPanel
@@ -48,24 +45,25 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         panel.isOpaque = false
         panel.backgroundColor = .clear
         panel.hasShadow = true
-        panel.minSize = NSSize(width: 360, height: 260)
+        panel.minSize = NSSize(width: 320, height: 200)
         panel.isReleasedWhenClosed = false
         let glass = NSGlassEffectView()
         glass.cornerRadius = 18
         glass.style = .clear
         // Tint only the material, keeping the text opaque over a gently darkened backdrop.
         glass.tintColor = NSColor.black.withAlphaComponent(0.12)
-        glass.contentView = NSHostingView(rootView: ResultContentView(lookup: lookup, backdrop: backdrop, onClose: { [weak self] in self?.close() }))
+        let content = NSHostingView(rootView: ResultContentView(lookup: lookup, backdrop: backdrop, onClose: { [weak self] in self?.close() }))
+        // AppKit owns the frame. SwiftUI content must not constrain or resize the user's window.
+        content.sizingOptions = []
+        glass.contentView = content
         panel.contentView = glass
-        contentSubscription = lookup.$result.combineLatest(lookup.$errorMessage)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _, _ in self?.resizeForContent() }
     }
 
     func show(near anchor: CGPoint, clipboard: Bool) {
         isClipboardPanel = clipboard
         if Defaults[.focusedPinned], hasShown {
             // Reuse the frame, including user drags/resizes, across selections, retries, and reopenings.
+            if let visible = panel.screen?.visibleFrame { updateSizeLimits(for: visible) }
             updateCollectionBehavior()
             panel.orderFrontRegardless()
             backdrop.start()
@@ -74,9 +72,8 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         let screen = NSScreen.screens.first { $0.frame.contains(anchor) } ?? NSScreen.main
         guard let visible = screen?.visibleFrame else { return }
         updateCollectionBehavior()
-        let height: CGFloat = 260
-        panel.maxSize = NSSize(width: visible.width, height: max(260, visible.height * Defaults[.focusedMaximumHeight]))
-        let size = NSSize(width: min(440, visible.width), height: height)
+        updateSizeLimits(for: visible)
+        let size = restoredSize(in: visible)
         let origin: CGPoint
         if Defaults[.focusedRememberPosition], let lastPosition { origin = lastPosition }
         else if clipboard { origin = CGPoint(x: visible.midX - size.width / 2, y: visible.midY - size.height / 2) }
@@ -94,8 +91,6 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
     }
 
     func close() {
-        resizeAfterMouseRelease?.cancel()
-        resizeAfterMouseRelease = nil
         backdrop.stop()
         lookup.stop()
         panel.orderOut(nil)
@@ -109,10 +104,28 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         lastPosition = panel.frame.origin
         backdrop.frameDidChange()
     }
-    func windowDidResize(_ notification: Notification) { backdrop.frameDidChange() }
+    func windowDidResize(_ notification: Notification) {
+        backdrop.frameDidChange()
+    }
+
+    func windowWillStartLiveResize(_ notification: Notification) {
+        if let visible = panel.screen?.visibleFrame { updateSizeLimits(for: visible) }
+    }
+
+    func windowDidEndLiveResize(_ notification: Notification) {
+        // Persist only intentional user resizing, never programmatic positioning or a small-screen clamp.
+        let size = panel.frame.size
+        guard size.width.isFinite, size.height.isFinite, size.width > 0, size.height > 0 else { return }
+        Defaults[.focusedPanelWidth] = Double(size.width)
+        Defaults[.focusedPanelHeight] = Double(size.height)
+    }
+
+    func windowDidChangeScreen(_ notification: Notification) {
+        if let visible = panel.screen?.visibleFrame { updateSizeLimits(for: visible) }
+        backdrop.frameDidChange()
+    }
+
     func windowWillClose(_ notification: Notification) {
-        resizeAfterMouseRelease?.cancel()
-        resizeAfterMouseRelease = nil
         backdrop.stop()
         lookup.stop()
     }
@@ -121,42 +134,18 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         panel.collectionBehavior = Defaults[.focusedAllSpaces] ? [.canJoinAllSpaces, .fullScreenAuxiliary] : [.fullScreenAuxiliary]
     }
 
-    private func resizeForContent() {
-        // A pinned frame stays fixed while streamed content changes; overflow remains scrollable.
-        guard !Defaults[.focusedPinned], panel.isVisible, let screen = panel.screen else { return }
-        guard resizeAfterMouseRelease == nil else { return }
-        // Keep controls and user drags stable while streaming updates arrive during a mouse press.
-        guard NSEvent.pressedMouseButtons == 0 else {
-            scheduleResizeAfterMouseRelease()
-            return
-        }
-        let text = lookup.result + "\n" + (lookup.errorMessage ?? "")
-        // Only sizing is capped; the full answer remains selectable in the scroll view.
-        let measured = (String(text.prefix(6000)) as NSString).boundingRect(
-            with: NSSize(width: max(300, panel.frame.width - 36), height: .greatestFiniteMagnitude),
-            options: [.usesLineFragmentOrigin, .usesFontLeading],
-            attributes: [.font: NSFont.systemFont(ofSize: 15)]
-        ).height
-        let visible = screen.visibleFrame
-        let maximum = max(260, visible.height * Defaults[.focusedMaximumHeight])
-        let height = min(maximum, max(260, ceil(measured) + 200))
-        var frame = panel.frame
-        frame.origin.y = max(visible.minY, frame.maxY - height)
-        frame.size.height = height
-        panel.setFrame(frame, display: true)
+    private func updateSizeLimits(for visible: NSRect) {
+        panel.minSize = NSSize(width: min(320, visible.width), height: min(200, visible.height))
+        panel.maxSize = visible.size
     }
 
-    private func scheduleResizeAfterMouseRelease() {
-        guard resizeAfterMouseRelease == nil else { return }
-        resizeAfterMouseRelease = Task { [weak self] in
-            while NSEvent.pressedMouseButtons != 0 {
-                do { try await Task.sleep(for: .milliseconds(80)) } catch { return }
-            }
-            // Let AppKit dispatch the release to the pressed control before changing its frame.
-            do { try await Task.sleep(for: .milliseconds(80)) } catch { return }
-            guard !Task.isCancelled, let self else { return }
-            self.resizeAfterMouseRelease = nil
-            self.resizeForContent()
-        }
+    private func restoredSize(in visible: NSRect) -> NSSize {
+        let width = Defaults[.focusedPanelWidth]
+        let height = Defaults[.focusedPanelHeight]
+        // Keep the saved size intact when moving to a smaller screen; only constrain the displayed frame.
+        return NSSize(
+            width: min(visible.width, max(320, width.isFinite ? CGFloat(width) : 440)),
+            height: min(visible.height, max(200, height.isFinite ? CGFloat(height) : 320))
+        )
     }
 }

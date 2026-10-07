@@ -1,6 +1,7 @@
 "focused.about.description" = "Mouse selection and explicit clipboard translation with OpenAI-compatible APIs and DeepSeek. No OCR, audio, dictionary imports, text replacement, or telemetry.";
 "focused.about.license" = "Fork of Easydict by tisfeng and contributors. Licensed under GPL-3.0.";
 "focused.action.close" = "Close";
+"focused.action.copied" = "Copied";
 "focused.action.copy" = "Copy result";
 "focused.action.lookup" = "Look up selected text";
 "focused.action.retry" = "Retry";
@@ -89,9 +90,9 @@
 "focused.window.contrast.note" = "Automatic mode checks local background brightness while the panel is visible. Images are never saved or sent to the API. Without permission it follows system appearance; select Dark text or Light text instead. macOS may require restarting the app after granting access.";
 "focused.window.contrast.required" = "Screen Recording permission needed for automatic contrast";
 "focused.window.contrast.title" = "Text contrast";
-"focused.window.maximum_height" = "Maximum height: %d%% of screen";
 "focused.window.note" = "One floating panel with native Liquid Glass on macOS 26+. Clipboard translations stay open until you close them. The panel appears without taking focus.";
 "focused.window.pin" = "Keep the result panel open";
 "focused.window.pin_action" = "Pin panel";
 "focused.window.remember_position" = "Remember position until quit";
+"focused.window.resize_note" = "Drag an edge or corner to resize. Width and height are remembered automatically, including after restart. Long results scroll without changing the panel size.";
 "focused.window.unpin_action" = "Unpin panel";

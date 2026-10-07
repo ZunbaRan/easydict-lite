@@ -107,10 +107,11 @@ final class LookupController: ObservableObject {
         isRunning = false
     }
 
-    func copyResult() {
-        guard !result.isEmpty else { return }
+    @discardableResult
+    func copyResult() -> Bool {
+        guard !result.isEmpty else { return false }
         NSPasteboard.general.clearContents()
-        NSPasteboard.general.setString(result, forType: .string)
+        return NSPasteboard.general.setString(result, forType: .string)
     }
 
     private func complete(_ current: UUID) {
