@@ -1,6 +1,6 @@
 # Publish easydict-lite 0.1.8
 
-- 状态：active
+- 状态：completed
 - 创建日期：2026-10-09
 - 负责人：Codex
 - 关联 Issue/PR：none
@@ -43,9 +43,9 @@ Accepted version 0.1.8 is pushed on feat/streamlined-llm-fork, while the public 
 
 - [x] Confirmed latest accepted source and fork targeting; main fast-forward precondition passed.
 - [x] Build, test and package checks.
-- [ ] Canonical notes, preparation commit and validated Draft.
-- [ ] Published assets verified; fork main synchronized.
-- [ ] Delivery history, archived plan, final pushes and cleanup.
+- [x] Canonical notes, preparation commit and validated Draft.
+- [x] Published assets verified; fork main synchronized.
+- [x] Delivery history, archived plan, final pushes and cleanup.
 
 ## 验证
 
@@ -55,7 +55,11 @@ Accepted version 0.1.8 is pushed on feat/streamlined-llm-fork, while the public 
 - Release build, version 0.1.8/build 9, arm64 architecture, independent ID, app/extracted-ZIP signatures and file equality passed; SDK 26.5/minos 26.0 verified.
 - Eight existing tests in two suites passed. Runtime/source files remain at the accepted 7c1d91a7 implementation.
 - Fork Issues are disabled with zero open items; there are no merged fork PRs requiring follow-up.
-- Public asset results will be recorded on completion.
+- Published prerelease `0.1.8`, release ID `408073653`, with canonical title/body and ZIP/checksum assets verified before and after publication.
+- Annotated `v0.1.8` peels to `a569fdfb5a79385279a3f7aa87811ff54d00b8d7`; production files remain unchanged from accepted source `7c1d91a7`.
+- Both anonymous downloads returned 200 with exact size and SHA-256; checksum bytes match exactly. Its GitHub API type is text/plain, while the CDN serves it as application/octet-stream attachment; this transport type was accepted only after byte/hash verification.
+- Fork main safely fast-forwarded to the release source after public asset checks. Delivery records are prepared for the final commit/push and clean-state verification.
+- No ASC run, appcast, DMG or upstream actions apply to this focused fork publication. Only task-owned ignored preparation files are eligible for cleanup; dist app/ZIP/checksum are retained.
 
 ## 完成条件
 
