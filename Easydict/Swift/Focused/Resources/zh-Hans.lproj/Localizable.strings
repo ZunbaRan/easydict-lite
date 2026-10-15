@@ -26,6 +26,9 @@
 "focused.api.thinking" = "DeepSeek 查单词时启用思考";
 "focused.api.thinking_note" = "翻译和句子分析会关闭 DashScope 与 DeepSeek 的思考模式，查单词可保留思考。其他 API 遵循模型设置；翻译句子时请选择非思考模型。";
 "focused.app.name" = "easydict-lite";
+"focused.clipboard.copy_enabled" = "⌘C 复制后自动翻译";
+"focused.clipboard.copy_note" = "默认关闭。仅其他应用中的 ⌘C 触发，菜单或右键复制不触发；需要辅助功能权限。保留原剪贴板。手动「剪贴板翻译」不受语言过滤限制。";
+"focused.clipboard.excluded" = "此语言不自动翻译";
 "focused.edit.copy" = "复制";
 "focused.edit.cut" = "剪切";
 "focused.edit.paste" = "粘贴";
@@ -54,7 +57,7 @@
 "focused.mode.sentence" = "句子分析";
 "focused.mode.translation" = "翻译";
 "focused.permissions.granted" = "已授予辅助功能权限";
-"focused.permissions.note" = "剪贴板翻译无需辅助功能权限。不使用全局快捷键或模拟复制。背景文字对比度使用单独的可选屏幕录制权限。";
+"focused.permissions.note" = "手动剪贴板翻译无需辅助功能权限；鼠标划词和 ⌘C 自动翻译需要辅助功能权限。不模拟复制。背景文字对比度使用单独的可选屏幕录制权限。";
 "focused.permissions.open" = "打开系统设置";
 "focused.permissions.recheck" = "重新检查";
 "focused.permissions.required" = "鼠标划词需要辅助功能权限";
@@ -70,6 +73,7 @@
 "focused.selection.mode" = "默认查询模式";
 "focused.settings.about" = "关于";
 "focused.settings.api" = "API";
+"focused.settings.clipboard" = "剪贴板";
 "focused.settings.general" = "通用";
 "focused.settings.languages" = "查询语言";
 "focused.settings.permissions" = "辅助功能";

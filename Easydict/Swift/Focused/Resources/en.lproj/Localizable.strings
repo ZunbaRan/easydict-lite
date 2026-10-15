@@ -26,6 +26,9 @@
 "focused.api.thinking" = "DeepSeek thinking for word lookup";
 "focused.api.thinking_note" = "Translation and sentence analysis turn thinking off on DashScope and DeepSeek. Word lookup may use thinking. Other APIs follow their model settings; choose a non-thinking model for sentence translation.";
 "focused.app.name" = "easydict-lite";
+"focused.clipboard.copy_enabled" = "Automatically translate after ⌘C";
+"focused.clipboard.copy_note" = "Off by default. Only ⌘C in other apps triggers translation; menu and right-click Copy do not. Requires Accessibility access. The clipboard is preserved. Manual Clipboard Translation bypasses the language filter.";
+"focused.clipboard.excluded" = "Do not auto-translate this language";
 "focused.edit.copy" = "Copy";
 "focused.edit.cut" = "Cut";
 "focused.edit.paste" = "Paste";
@@ -54,7 +57,7 @@
 "focused.mode.sentence" = "Sentence Analysis";
 "focused.mode.translation" = "Translation";
 "focused.permissions.granted" = "Accessibility permission granted";
-"focused.permissions.note" = "Clipboard Translation works without accessibility permission. No keyboard shortcuts or Copy simulation are used. Background text contrast has a separate, optional Screen Recording permission.";
+"focused.permissions.note" = "Manual Clipboard Translation needs no Accessibility access. Mouse selection and automatic ⌘C translation require Accessibility access. Copy is never simulated. Background text contrast uses separate, optional Screen Recording access.";
 "focused.permissions.open" = "Open System Settings";
 "focused.permissions.recheck" = "Check again";
 "focused.permissions.required" = "Accessibility permission required for mouse selection";
@@ -70,6 +73,7 @@
 "focused.selection.mode" = "Default lookup mode";
 "focused.settings.about" = "About";
 "focused.settings.api" = "API";
+"focused.settings.clipboard" = "Clipboard";
 "focused.settings.general" = "General";
 "focused.settings.languages" = "Query languages";
 "focused.settings.permissions" = "Accessibility";

@@ -21,16 +21,19 @@ enum FocusedApplication {
 final class FocusedAppDelegate: NSObject, NSApplicationDelegate {
     private let lookup = LookupController()
     private let selection = MouseSelectionMonitor()
+    private let copyMonitor = CopyActionMonitor()
     private let icon = SelectionIconController()
     private lazy var results = ResultPanelController(lookup: lookup)
     private lazy var settings = FocusedSettingsController()
     private var statusItem: NSStatusItem?
     private var preferences: AnyCancellable?
+    private var copyPreferences: AnyCancellable?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         buildEditingMenu()
         buildMenu()
         lookup.onShow = { [weak self] anchor, clipboard in
+            self?.copyMonitor.cancelPendingRead()
             self?.icon.hide()
             self?.results.show(near: anchor, clipboard: clipboard)
         }
@@ -46,6 +49,16 @@ final class FocusedAppDelegate: NSObject, NSApplicationDelegate {
         preferences = Defaults.publisher(.focusedSelectionEnabled).receive(on: DispatchQueue.main).sink { [weak self] change in
             if change.newValue { self?.selection.start() } else { self?.selection.stop() }
         }
+        copyMonitor.onCopy = { [weak self] input in
+            guard let self, Defaults[.focusedCopyTranslationEnabled] else { return }
+            let excluded = Language(rawValue: Defaults[.focusedCopyExcludedLanguage]) ?? .auto
+            if excluded != .auto && Language.detect(input.text) == excluded { return }
+            self.lookup.start(input, mode: .translation)
+        }
+        copyPreferences = Defaults.publisher(.focusedCopyTranslationEnabled).receive(on: DispatchQueue.main).sink { [weak self] change in
+            if change.newValue { self?.copyMonitor.start() } else { self?.copyMonitor.stop() }
+        }
+        if Defaults[.focusedCopyTranslationEnabled] { copyMonitor.start() }
         if Defaults[.focusedSelectionEnabled] { selection.start() }
         if Defaults[.focusedChannel] == .compatible && Defaults[.focusedModel].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             settings.show()
@@ -53,6 +66,8 @@ final class FocusedAppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationWillTerminate(_ notification: Notification) {
+        copyMonitor.stop()
+        copyPreferences?.cancel()
         selection.stop()
         lookup.stop()
         preferences?.cancel()
@@ -105,7 +120,10 @@ final class FocusedAppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(item)
     }
 
-    @objc private func translateClipboard() { lookup.translateClipboard() }
+    @objc private func translateClipboard() {
+        copyMonitor.cancelPendingRead()
+        lookup.translateClipboard()
+    }
     @objc private func showSettings() { icon.hide(); settings.show() }
     @objc private func quit() { NSApplication.shared.terminate(nil) }
 }

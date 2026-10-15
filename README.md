@@ -10,6 +10,7 @@ Download the macOS 26+ Apple Silicon build from [Releases](https://github.com/Zu
 
 - Select plain text in another application, then click the lookup icon.
 - Translate long clipboard passages from the menu bar. The clipboard is read once and preserved during translation. **Copy result** is an explicit action.
+- Opt in to **Automatically translate after ⌘C** in Settings → General → Clipboard. Only external ⌘C starts a bounded read of that copy; idle clipboard changes and menu/right-click Copy do not trigger it. Choose an excluded language to skip automatic requests. The manual menu bypasses this filter.
 - One selectable, scrollable Liquid Glass result panel on macOS 26+. Clipboard results stay open until closed.
 - Automatic light/dark text contrast from local backdrop brightness, with optional Screen Recording access and manual text-color choices.
 - OpenAI-compatible Chat Completions and a DeepSeek preset, with separate Keychain credentials.
@@ -32,7 +33,7 @@ The script also creates `dist/easydict-lite.zip`. Move `easydict-lite.app` to Ap
 
 The packaging script selects an installed macOS 26 SDK on Command Line Tools to avoid missing SwiftUI macro plugins in the macOS 27 CLT SDK. It records the actual SDK version for Liquid Glass and applies a stable local ad-hoc signature. It does not install over Easydict. The fork uses bundle ID `org.easydict.focused` and separate preferences and Keychain entries.
 
-In Settings, choose a channel, enter a model, and save its API key. **Test connection** sends a short fixed sample. Mouse selection requires Accessibility permission; Clipboard Translation does not. Automatic background text contrast uses optional Screen Recording access, enabled explicitly in Settings → Window. Translation itself does not require this permission. Without access, choose Dark text or Light text; automatic mode follows system appearance until access is granted. Backdrop images are processed locally and never saved or sent to the API.
+In Settings, choose a channel, enter a model, and save its API key. **Test connection** sends a short fixed sample. Mouse selection and automatic ⌘C translation require Accessibility permission; manual Clipboard Translation does not. Automatic background text contrast uses optional Screen Recording access, enabled explicitly in Settings → Window. Translation itself does not require this permission. Without access, choose Dark text or Light text; automatic mode follows system appearance until access is granted. Backdrop images are processed locally and never saved or sent to the API.
 
 ## Limits and verification
 

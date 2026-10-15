@@ -449,6 +449,54 @@
         }
       }
     },
+    "focused.clipboard.copy_enabled": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatically translate after ⌘C"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "⌘C 复制后自动翻译"
+          }
+        }
+      }
+    },
+    "focused.clipboard.copy_note": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off by default. Only ⌘C in other apps triggers translation; menu and right-click Copy do not. Requires Accessibility access. The clipboard is preserved. Manual Clipboard Translation bypasses the language filter."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "默认关闭。仅其他应用中的 ⌘C 触发，菜单或右键复制不触发；需要辅助功能权限。保留原剪贴板。手动「剪贴板翻译」不受语言过滤限制。"
+          }
+        }
+      }
+    },
+    "focused.clipboard.excluded": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do not auto-translate this language"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "此语言不自动翻译"
+          }
+        }
+      }
+    },
     "focused.edit.copy": {
       "extractionState": "manual",
       "localizations": {
@@ -907,13 +955,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clipboard Translation works without accessibility permission. No keyboard shortcuts or Copy simulation are used. Background text contrast has a separate, optional Screen Recording permission."
+            "value": "Manual Clipboard Translation needs no Accessibility access. Mouse selection and automatic ⌘C translation require Accessibility access. Copy is never simulated. Background text contrast uses separate, optional Screen Recording access."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "剪贴板翻译无需辅助功能权限。不使用全局快捷键或模拟复制。背景文字对比度使用单独的可选屏幕录制权限。"
+            "value": "手动剪贴板翻译无需辅助功能权限；鼠标划词和 ⌘C 自动翻译需要辅助功能权限。不模拟复制。背景文字对比度使用单独的可选屏幕录制权限。"
           }
         }
       }
@@ -1154,6 +1202,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "API"
+          }
+        }
+      }
+    },
+    "focused.settings.clipboard": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clipboard"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "剪贴板"
           }
         }
       }

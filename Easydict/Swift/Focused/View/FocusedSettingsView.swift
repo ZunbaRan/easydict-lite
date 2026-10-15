@@ -8,6 +8,8 @@ import SwiftUI
 struct FocusedSettingsView: View {
     @Default(.focusedFirstLanguage) private var firstLanguage
     @Default(.focusedSecondLanguage) private var secondLanguage
+    @Default(.focusedCopyTranslationEnabled) private var copyTranslationEnabled
+    @Default(.focusedCopyExcludedLanguage) private var copyExcludedLanguage
     @Default(.focusedSelectionEnabled) private var selectionEnabled
     @Default(.focusedExcludedLanguage) private var excludedLanguage
     @Default(.focusedMinimumLength) private var minimumLength
@@ -37,6 +39,11 @@ struct FocusedSettingsView: View {
                         ForEach(LookupMode.allCases, id: \.self) { Text($0.title).tag($0) }
                     }
                     Text(AppStrings.text("focused.selection.click_note")).font(.caption).foregroundStyle(.secondary)
+                }
+                Section(AppStrings.text("focused.settings.clipboard")) {
+                    Toggle(AppStrings.text("focused.clipboard.copy_enabled"), isOn: $copyTranslationEnabled)
+                    languagePicker("focused.clipboard.excluded", selection: $copyExcludedLanguage, allowAuto: true)
+                    Text(AppStrings.text("focused.clipboard.copy_note")).font(.caption).foregroundStyle(.secondary)
                 }
                 Section(AppStrings.text("focused.settings.permissions")) {
                     Label(AppStrings.text(trusted ? "focused.permissions.granted" : "focused.permissions.required"), systemSymbol: trusted ? .checkmarkCircle : .exclamationmarkTriangle)

@@ -22,7 +22,7 @@ final class LookupController: ObservableObject {
     private var displayGate = ThrottleGate(interval: 0.05)
 
     func translateClipboard() {
-        // Read exactly once on an explicit menu action. Never clear, restore, or monitor it.
+        // Read exactly once on an explicit menu action; automatic Copy uses its own captured snapshot.
         let text = NSPasteboard.general.string(forType: .string)
         let snapshot = LookupInput(text: text ?? "", anchor: NSEvent.mouseLocation, isClipboard: true)
         start(snapshot, mode: .translation)

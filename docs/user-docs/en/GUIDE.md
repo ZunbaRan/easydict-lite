@@ -47,3 +47,8 @@ Requirements: macOS 26+, Swift 6.2+, macOS 26+ SDK. For Xcode use `Easydict.xcwo
 The app has a separate local identity and no upstream updater. Eight retained tests cover request task control and throttling. Provider, visual/focus, Accessibility, sleep/wake, and extended-use checks need the target environment and are not implied by a successful build.
 
 The persistent active glass appearance uses two undocumented AppKit appearance queries, isolated to the result panel. This matches EchoType's implementation without making the window key when it appears. Revalidate this compatibility behavior after macOS updates; if the system stops querying those methods, the glass may return to the system's inactive appearance.
+
+
+### Automatic Copy translation
+
+In Settings → General → Clipboard, enable automatic translation after ⌘C (off by default). Accessibility access is required. Only external ⌘C triggers this feature; menu and right-click Copy do not. Each Copy waits up to one second for new plain text; no idle clipboard polling occurs. Later keyboard/mouse actions or app switches cancel a pending read. Choose a language to exclude from automatic requests. Language detection is local, using the system Natural Language recognizer on the first 6,000 characters. Manual Clipboard Translation bypasses the filter. The original clipboard is preserved; retries use the captured text.
