@@ -16,7 +16,7 @@ Only Accessibility text is read; the app does not simulate Copy or execute brows
 
 ## Clipboard Translation
 
-Copy your passage using the source application's normal Copy action, then click Clipboard Translation in the menu bar. The app snapshots the current plain text, sends it in full, and leaves the clipboard untouched. Clipboard results remain open until closed.
+Copy your passage using the source application's normal Copy action, then click Clipboard Translation in the menu bar. The app snapshots the current plain text, sends it in full, and leaves the clipboard untouched. Pinned results remain open; unpinned results hide after 10 idle seconds following translation completion.
 
 The input limit is 2 MiB, with an explicit error before sending larger input. Model-specific context errors are displayed. There is no automatic chunking or silent truncation. An incomplete answer is marked and the partial result stays available.
 
@@ -28,7 +28,7 @@ Drag an edge or corner to resize the panel's width and height. Size is always re
 
 In Settings → Window → Text contrast, Automatic from background selects dark text on light backgrounds and light text on dark backgrounds. Click Enable automatic contrast to grant the optional Screen Recording permission; macOS may require an app restart. Without permission, automatic mode follows system appearance; Dark text and Light text work without capture access. Sampling runs only while the result panel is visible, at most one image request at a time with a 1.5-second refresh interval. It excludes this app, crops to the panel area, and reduces pixels to brightness in local memory. Images are never saved or sent to the translation API. The glass transparency and pinned frame are independent of text contrast.
 
-Pin remains available while a request is running. Unpinning or finishing a window move or resize leaves the panel open; a mouse-down in another application's window dismisses an unpinned selection result. Clipboard results stay open. Streaming updates do not resize or move the panel.
+Pin remains available while a request is running. Both selection and clipboard results stay open while pinned. Unpinned results hide after 10 idle seconds once the request finishes, fails, or is stopped. Hovering, selecting text, dragging, or resizing renews the idle period; clicking elsewhere does not close the panel immediately. Streaming requests never expire. Copy or lookup shows the panel again. Streaming updates do not resize or move the panel.
 
 The result panel keeps its active Liquid Glass appearance when the pointer leaves. Pin controls whether the panel stays open, independently of the glass appearance. System accessibility settings can still alter the material.
 

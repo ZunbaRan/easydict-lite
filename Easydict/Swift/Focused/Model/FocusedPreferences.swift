@@ -56,7 +56,10 @@ extension Defaults.Keys {
     static let focusedSelectionMode = Key<LookupMode>("focused.selection.mode", default: .dictionary)
     static let focusedCustomPrompt = Key<String>("focused.prompt.custom", default: "")
     static let focusedCustomPromptEnabled = Key<Bool>("focused.prompt.enabled", default: false)
-    static let focusedPinned = Key<Bool>("focused.window.pinned", default: false)
+    static let focusedPinned = Key<Bool>(
+        "focusedWindowPinned",
+        default: Defaults[Key<Bool>("focused.window.pinned", default: false)]
+    )
     static let focusedPanelWidth = Key<Double>("focused.window.width", default: 440)
     static let focusedPanelHeight = Key<Double>("focused.window.height", default: 320)
     static let focusedAllSpaces = Key<Bool>("focused.window.all_spaces", default: true)

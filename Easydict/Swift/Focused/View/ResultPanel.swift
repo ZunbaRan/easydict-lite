@@ -1,6 +1,7 @@
 // Copyright © 2026 Easydict contributors. GPL-3.0.
 
 import AppKit
+import Combine
 import Defaults
 import SwiftUI
 
@@ -26,7 +27,10 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
     private let backdrop: BackdropAppearanceController
     private var lastPosition: CGPoint?
     private var hasShown = false
-    private var isClipboardPanel = false
+    private var observations = Set<AnyCancellable>()
+    private var idleHideTimer: Timer?
+    private var hideDeadline = Date.distantFuture
+    private static let idleHideInterval: TimeInterval = 10
 
     init(lookup: LookupController) {
         self.lookup = lookup
@@ -57,16 +61,23 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         content.sizingOptions = []
         glass.contentView = content
         panel.contentView = glass
+        lookup.$isRunning.receive(on: DispatchQueue.main).sink { [weak self] _ in
+            // Read current state after @Published commits, including rapid stop/retry transitions.
+            self?.refreshAutoHide()
+        }.store(in: &observations)
+        Defaults.publisher(.focusedPinned).receive(on: DispatchQueue.main).sink { [weak self] _ in
+            self?.refreshAutoHide()
+        }.store(in: &observations)
     }
 
     func show(near anchor: CGPoint, clipboard: Bool) {
-        isClipboardPanel = clipboard
         if Defaults[.focusedPinned], hasShown {
             // Reuse the frame, including user drags/resizes, across selections, retries, and reopenings.
             if let visible = panel.screen?.visibleFrame { updateSizeLimits(for: visible) }
             updateCollectionBehavior()
             panel.orderFrontRegardless()
             backdrop.start()
+            refreshAutoHide()
             return
         }
         let screen = NSScreen.screens.first { $0.frame.contains(anchor) } ?? NSScreen.main
@@ -88,16 +99,14 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
         // Unlike makeKeyAndOrderFront, this does not transfer keyboard input to the lookup app.
         panel.orderFrontRegardless()
         backdrop.start()
+        refreshAutoHide()
     }
 
     func close() {
+        cancelAutoHide()
         backdrop.stop()
         lookup.stop()
         panel.orderOut(nil)
-    }
-
-    func dismissOnExternalClick(at location: CGPoint) {
-        if !isClipboardPanel && !Defaults[.focusedPinned] && panel.isVisible && !panel.frame.contains(location) { close() }
     }
 
     func windowDidMove(_ notification: Notification) {
@@ -126,8 +135,38 @@ final class ResultPanelController: NSObject, NSWindowDelegate {
     }
 
     func windowWillClose(_ notification: Notification) {
+        cancelAutoHide()
         backdrop.stop()
         lookup.stop()
+    }
+
+    /// Only completed, unpinned results expire; interacting with the panel renews the idle interval.
+    private func refreshAutoHide() {
+        cancelAutoHide()
+        guard panel.isVisible, !Defaults[.focusedPinned], !lookup.isRunning else { return }
+        hideDeadline = Date().addingTimeInterval(Self.idleHideInterval)
+        let timer = Timer(timeInterval: 0.25, repeats: true) { [weak self] timer in
+            MainActor.assumeIsolated {
+                guard let self else { timer.invalidate(); return }
+                guard self.panel.isVisible, !Defaults[.focusedPinned], !self.lookup.isRunning else {
+                    self.cancelAutoHide()
+                    return
+                }
+                let isSelecting = self.panel.isKeyWindow && NSEvent.pressedMouseButtons != 0
+                if self.panel.inLiveResize || isSelecting || NSMouseInRect(NSEvent.mouseLocation, self.panel.frame, false) {
+                    self.hideDeadline = Date().addingTimeInterval(Self.idleHideInterval)
+                } else if Date() >= self.hideDeadline {
+                    self.close()
+                }
+            }
+        }
+        idleHideTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
+    }
+
+    private func cancelAutoHide() {
+        idleHideTimer?.invalidate()
+        idleHideTimer = nil
     }
 
     private func updateCollectionBehavior() {

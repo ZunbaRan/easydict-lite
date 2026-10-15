@@ -94,7 +94,7 @@
 "focused.window.contrast.note" = "Automatic mode checks local background brightness while the panel is visible. Images are never saved or sent to the API. Without permission it follows system appearance; select Dark text or Light text instead. macOS may require restarting the app after granting access.";
 "focused.window.contrast.required" = "Screen Recording permission needed for automatic contrast";
 "focused.window.contrast.title" = "Text contrast";
-"focused.window.note" = "One floating panel with native Liquid Glass on macOS 26+. Clipboard translations stay open until you close them. The panel appears without taking focus.";
+"focused.window.note" = "Pinned results stay open. Unpinned results hide after 10 idle seconds once translation finishes. Hovering, selecting, or dragging pauses the timer. Copy or lookup shows the panel again without taking focus.";
 "focused.window.pin" = "Keep the result panel open";
 "focused.window.pin_action" = "Pin panel";
 "focused.window.remember_position" = "Remember position until quit";

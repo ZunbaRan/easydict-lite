@@ -11,7 +11,7 @@ Download the macOS 26+ Apple Silicon build from [Releases](https://github.com/Zu
 - Select plain text in another application, then click the lookup icon.
 - Translate long clipboard passages from the menu bar. The clipboard is read once and preserved during translation. **Copy result** is an explicit action.
 - Opt in to **Automatically translate after ⌘C** in Settings → General → Clipboard. Only external ⌘C starts a bounded read of that copy; idle clipboard changes and menu/right-click Copy do not trigger it. Choose an excluded language to skip automatic requests. The manual menu bypasses this filter.
-- One selectable, scrollable Liquid Glass result panel on macOS 26+. Clipboard results stay open until closed.
+- One selectable, scrollable Liquid Glass result panel on macOS 26+. Pinned results stay open; unpinned results hide after 10 idle seconds following completion. Hovering, selecting, or dragging pauses the timer. Copy or lookup shows the panel again.
 - Automatic light/dark text contrast from local backdrop brightness, with optional Screen Recording access and manual text-color choices.
 - OpenAI-compatible Chat Completions and a DeepSeek preset, with separate Keychain credentials.
 - Retained translation, word explanation, sentence analysis, and custom prompts.

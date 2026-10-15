@@ -1547,13 +1547,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "One floating panel with native Liquid Glass on macOS 26+. Clipboard translations stay open until you close them. The panel appears without taking focus."
+            "value": "Pinned results stay open. Unpinned results hide after 10 idle seconds once translation finishes. Hovering, selecting, or dragging pauses the timer. Copy or lookup shows the panel again without taking focus."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "在 macOS 26 及以上使用单一原生 Liquid Glass 悬浮面板。剪贴板翻译保持打开，直到手动关闭。显示时不抢占焦点。"
+            "value": "Pin 时常驻；未 Pin 时，翻译结束后闲置 10 秒自动隐藏。悬停、选字或拖动时暂停计时，复制或查询可重新唤出，显示时不抢焦点。"
           }
         }
       }

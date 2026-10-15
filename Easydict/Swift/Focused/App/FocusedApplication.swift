@@ -39,7 +39,6 @@ final class FocusedAppDelegate: NSObject, NSApplicationDelegate {
         }
         selection.onSelection = { [weak self] input in self?.icon.show(input) }
         selection.onDismiss = { [weak self] in self?.icon.hide() }
-        selection.onExternalClick = { [weak self] location in self?.results.dismissOnExternalClick(at: location) }
         icon.onLookup = { [weak self] input in
             let mode = Defaults[.focusedSelectionMode]
             // Long selections default to translation rather than receiving a word-lookup prompt.

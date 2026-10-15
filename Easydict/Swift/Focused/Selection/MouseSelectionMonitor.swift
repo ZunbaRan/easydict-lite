@@ -8,7 +8,6 @@ import Defaults
 final class MouseSelectionMonitor {
     var onSelection: ((LookupInput) -> Void)?
     var onDismiss: (() -> Void)?
-    var onExternalClick: ((CGPoint) -> Void)?
 
     private var monitor: Any?
     private var localMonitor: Any?
@@ -39,7 +38,6 @@ final class MouseSelectionMonitor {
                 if event.type == .leftMouseUp { self.readSelection(anchor: location) }
                 else {
                     self.invalidateSelection()
-                    self.onExternalClick?(location)
                 }
             }
         }
