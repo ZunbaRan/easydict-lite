@@ -470,13 +470,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Off by default. Only ⌘C in other apps triggers translation; menu and right-click Copy do not. Requires Accessibility access. The clipboard is preserved. Manual Clipboard Translation bypasses the language filter."
+            "value": "Off by default. Only ⌘C in other apps triggers translation; menu and right-click Copy do not. Requires Accessibility access. The clipboard is preserved. Manual Clipboard Translation bypasses the language filter. Chinese exclusions skip only pure Chinese; mixed text still translates."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "默认关闭。仅其他应用中的 ⌘C 触发，菜单或右键复制不触发；需要辅助功能权限。保留原剪贴板。手动「剪贴板翻译」不受语言过滤限制。"
+            "value": "默认关闭。仅其他应用中的 ⌘C 触发，菜单或右键复制不触发；需要辅助功能权限。保留原剪贴板。手动「剪贴板翻译」不受语言过滤限制。 选择中文时仅过滤纯中文，中英混合仍翻译。"
           }
         }
       }
@@ -1099,13 +1099,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Click the icon to query. Long selections use translation. Selection uses accessibility only; some apps do not expose selected text."
+            "value": "Click the icon to query. Long selections use translation. Selection uses accessibility only; some apps do not expose selected text. Chinese exclusions skip only pure Chinese; mixed text keeps the icon."
           }
         },
         "zh-Hans": {
           "stringUnit": {
             "state": "translated",
-            "value": "点击图标查询。长文本使用翻译。仅通过辅助功能读取选中文本，部分应用不提供所选文字。"
+            "value": "点击图标查询。长文本使用翻译。仅通过辅助功能读取选中文本，部分应用不提供所选文字。 选择中文过滤时仅跳过纯中文，中英混合仍显示图标。"
           }
         }
       }

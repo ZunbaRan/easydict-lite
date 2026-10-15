@@ -51,7 +51,7 @@ final class FocusedAppDelegate: NSObject, NSApplicationDelegate {
         copyMonitor.onCopy = { [weak self] input in
             guard let self, Defaults[.focusedCopyTranslationEnabled] else { return }
             let excluded = Language(rawValue: Defaults[.focusedCopyExcludedLanguage]) ?? .auto
-            if excluded != .auto && Language.detect(input.text) == excluded { return }
+            if excluded.excludesAutomaticQuery(for: input.text) { return }
             self.lookup.start(input, mode: .translation)
         }
         copyPreferences = Defaults.publisher(.focusedCopyTranslationEnabled).receive(on: DispatchQueue.main).sink { [weak self] change in

@@ -27,7 +27,7 @@
 "focused.api.thinking_note" = "Translation and sentence analysis turn thinking off on DashScope and DeepSeek. Word lookup may use thinking. Other APIs follow their model settings; choose a non-thinking model for sentence translation.";
 "focused.app.name" = "easydict-lite";
 "focused.clipboard.copy_enabled" = "Automatically translate after ⌘C";
-"focused.clipboard.copy_note" = "Off by default. Only ⌘C in other apps triggers translation; menu and right-click Copy do not. Requires Accessibility access. The clipboard is preserved. Manual Clipboard Translation bypasses the language filter.";
+"focused.clipboard.copy_note" = "Off by default. Only ⌘C in other apps triggers translation; menu and right-click Copy do not. Requires Accessibility access. The clipboard is preserved. Manual Clipboard Translation bypasses the language filter. Chinese exclusions skip only pure Chinese; mixed text still translates.";
 "focused.clipboard.excluded" = "Do not auto-translate this language";
 "focused.edit.copy" = "Copy";
 "focused.edit.cut" = "Cut";
@@ -66,7 +66,7 @@
 "focused.prompts.retained_note" = "Built-in translation, word lookup, and sentence analysis prompts are retained. Switch modes in the result panel.";
 "focused.prompts.variables" = "Variables: ${{queryText}}, ${{queryFromLanguage}}, ${{queryTargetLanguage}}, ${{firstLanguage}}. A custom prompt replaces the built-in prompts.";
 "focused.result.source" = "Source text";
-"focused.selection.click_note" = "Click the icon to query. Long selections use translation. Selection uses accessibility only; some apps do not expose selected text.";
+"focused.selection.click_note" = "Click the icon to query. Long selections use translation. Selection uses accessibility only; some apps do not expose selected text. Chinese exclusions skip only pure Chinese; mixed text keeps the icon.";
 "focused.selection.enabled" = "Show lookup icon after selecting text";
 "focused.selection.excluded" = "Hide icon for this language";
 "focused.selection.minimum_length" = "Minimum selection length: %d";

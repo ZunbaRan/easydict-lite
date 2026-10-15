@@ -27,7 +27,7 @@
 "focused.api.thinking_note" = "翻译和句子分析会关闭 DashScope 与 DeepSeek 的思考模式，查单词可保留思考。其他 API 遵循模型设置；翻译句子时请选择非思考模型。";
 "focused.app.name" = "easydict-lite";
 "focused.clipboard.copy_enabled" = "⌘C 复制后自动翻译";
-"focused.clipboard.copy_note" = "默认关闭。仅其他应用中的 ⌘C 触发，菜单或右键复制不触发；需要辅助功能权限。保留原剪贴板。手动「剪贴板翻译」不受语言过滤限制。";
+"focused.clipboard.copy_note" = "默认关闭。仅其他应用中的 ⌘C 触发，菜单或右键复制不触发；需要辅助功能权限。保留原剪贴板。手动「剪贴板翻译」不受语言过滤限制。 选择中文时仅过滤纯中文，中英混合仍翻译。";
 "focused.clipboard.excluded" = "此语言不自动翻译";
 "focused.edit.copy" = "复制";
 "focused.edit.cut" = "剪切";
@@ -66,7 +66,7 @@
 "focused.prompts.retained_note" = "保留内置翻译、查单词及句子分析提示词。可在结果面板切换模式。";
 "focused.prompts.variables" = "变量：${{queryText}}、${{queryFromLanguage}}、${{queryTargetLanguage}}、${{firstLanguage}}。自定义提示词会替代内置提示词。";
 "focused.result.source" = "原文";
-"focused.selection.click_note" = "点击图标查询。长文本使用翻译。仅通过辅助功能读取选中文本，部分应用不提供所选文字。";
+"focused.selection.click_note" = "点击图标查询。长文本使用翻译。仅通过辅助功能读取选中文本，部分应用不提供所选文字。 选择中文过滤时仅跳过纯中文，中英混合仍显示图标。";
 "focused.selection.enabled" = "划词后显示查询图标";
 "focused.selection.excluded" = "此语言不显示查询图标";
 "focused.selection.minimum_length" = "最少选中字符数：%d";

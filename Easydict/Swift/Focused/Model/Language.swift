@@ -127,6 +127,22 @@ enum Language: String, CaseIterable, Sendable {
         [.simplifiedChinese, .traditionalChinese, .classicalChinese].contains(self)
     }
 
+    /// Chinese exclusions require Han text only; mixed scripts and detected Japanese remain eligible.
+    /// Other languages retain the existing system language detection policy.
+    func excludesAutomaticQuery(for text: String) -> Bool {
+        guard self != .auto else { return false }
+        guard isChinese else { return Self.detect(text) == self }
+        var hasChinese = false
+        for scalar in text.unicodeScalars {
+            if scalar.properties.isIdeographic {
+                hasChinese = true
+            } else if scalar.properties.isAlphabetic {
+                return false
+            }
+        }
+        return hasChinese && Self.detect(text) != .japanese
+    }
+
     static func detect(_ text: String) -> Language {
         let recognizer = NLLanguageRecognizer()
         recognizer.processString(String(text.prefix(6000)))

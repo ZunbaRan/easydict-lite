@@ -24,7 +24,7 @@ Easydict/Swift/Focused/
   本地 mouse-down 原样返回并保护对应 mouse-up，全局事件用 AppKit 最前命中窗口区分本应用，
   防止读到非激活面板后方旧选择；不是用所有可见窗口矩形排除被其他应用遮挡的设置窗口。
 - 手动剪贴板入口显式读取一次，形成不可变原文快照；重试使用该快照。唯一的剪贴板写入入口是 Copy result。
-- `CopyActionMonitor` 是独立的可选 Selection 边界，默认关闭。它通过只读 session event tap 监听外部 ⌘C，按键时记录 changeCount，仅为该次复制最多等待一秒；空、非文本或未写入时不发查询，不持续轮询剪贴板。后续键盘、鼠标、应用切换、显式查询和关闭开关取消等待读取；辅助功能授权后切回应用可重试安装。`FocusedAppDelegate` 按独立排除语言使用 `Language.detect` 本地过滤，再提交不可变 LookupInput，复用翻译模式和单结果面板。手动菜单不受自动复制语言过滤限制。
+- `CopyActionMonitor` 是独立的可选 Selection 边界，默认关闭。它通过只读 session event tap 监听外部 ⌘C，按键时记录 changeCount，仅为该次复制最多等待一秒；空、非文本或未写入时不发查询，不持续轮询剪贴板。后续键盘、鼠标、应用切换、显式查询和关闭开关取消等待读取；辅助功能授权后切回应用可重试安装。`FocusedAppDelegate` 按独立排除语言使用 `Language.excludesAutomaticQuery` 本地过滤：中文按全文汉字组成判断，混合其他文字或明确识别为日语时保留；其他语种仍使用 `Language.detect`，再提交不可变 LookupInput，复用翻译模式和单结果面板。手动菜单不受自动复制语言过滤限制。
 - `LookupController` 在 MainActor 上拥有当前请求 ID 和 UI 状态，取消旧请求并丢弃过期响应；保留
   `OpenAIStreamTaskControl` 的线程安全任务取消机制。
 - `LLMClient` 使用 Alamofire async 数据流统一读取 JSON / SSE，按字节缓冲完整行后解码 UTF-8，

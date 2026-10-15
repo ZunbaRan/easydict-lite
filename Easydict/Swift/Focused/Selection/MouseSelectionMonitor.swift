@@ -106,7 +106,7 @@ final class MouseSelectionMonitor {
                   text.count >= max(1, Defaults[.focusedMinimumLength])
             else { return }
             let excluded = Language(rawValue: Defaults[.focusedExcludedLanguage]) ?? .auto
-            if excluded != .auto && Language.detect(text) == excluded { return }
+            if excluded.excludesAutomaticQuery(for: text) { return }
             self.onSelection?(.init(text: text, anchor: anchor, isClipboard: false))
             self.readTask = nil
         }

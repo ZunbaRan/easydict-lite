@@ -74,3 +74,13 @@
 - Pin 改用合法 Defaults key，并以旧键值作为兼容默认值；英中设置文案、主 String Catalog、镜像、README、指南和架构同步。
 - 基线与最终 `scripts/focused/run-tests.sh`：8 项通过；没有新增或扩写测试。Release 打包与严格签名校验通过，sdk 26.5。
 - 两项只读审查无有效 finding；计时、悬停和选字拖动未实际计时验证，完整 Xcode 不可用，未将编译或保留测试写成 UI 验证通过。
+
+### 纯语种过滤与悬停一致性修正
+
+- 用户要求 EchoType 跳过纯英文、Easydict 跳过纯中文，并再次确认两边相同的悬停续期时长。
+- Easydict 的划词与复制共用 `Language.excludesAutomaticQuery`：中文过滤扫描全文文字组成，简繁共用范围，中英混合继续请求；保留明确识别为日语的汉字内容。其他排除语种沿用系统检测。
+- 新安装复制排除默认中文，用户已有语言或不过滤选择继续优先；主 String Catalog、两个语言镜像和 README / 架构说明同步。
+- EchoType 在独立仓库以文字组成保护中英混合，使用系统语种与短英文拼写兜底解决 OK / Copy / test 的误判；并将按住选字续期条件与 Easydict 对齐。
+- 两项只读审查修复非英文拉丁文字与日语汉字的边界，最终增量审查无未解决 finding。Easydict 保留 8 项测试与 EchoType 66 项测试通过；未新增或扩写 Easydict 仓库测试。
+- 临时本地源码探针覆盖英文短词、法西语、中英混合、简繁中文与日语汉字；本轮没有真实跨应用复制或 UI 秒表计时验证，完整 Xcode 不可用。
+- 最终 Release 打包成功，严格签名校验通过，sdk 26.5；已重启 dist 应用。主 String Catalog 与 en/zh-Hans 镜像一致，JSON 和 diff 检查通过。

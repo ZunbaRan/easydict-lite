@@ -48,7 +48,7 @@ extension Defaults.Keys {
     )
     static let focusedCopyExcludedLanguage = Key<String>(
         "focusedClipboardExcludedLanguage",
-        default: Defaults[Key<String>("focused.clipboard.excluded", default: "auto")]
+        default: Defaults[Key<String>("focused.clipboard.excluded", default: "Simplified-Chinese")]
     )
     static let focusedSelectionEnabled = Key<Bool>("focused.selection.enabled", default: true)
     static let focusedExcludedLanguage = Key<String>("focused.selection.excluded", default: "Simplified-Chinese")
