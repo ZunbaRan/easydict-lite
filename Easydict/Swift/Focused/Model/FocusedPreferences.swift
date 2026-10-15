@@ -40,8 +40,16 @@ extension Defaults.Keys {
     static let focusedThinking = Key<Bool>("focused.thinking", default: false)
     static let focusedFirstLanguage = Key<String>("focused.language.first", default: "Simplified-Chinese")
     static let focusedSecondLanguage = Key<String>("focused.language.second", default: "English")
-    static let focusedCopyTranslationEnabled = Key<Bool>("focused.clipboard.copy_enabled", default: false)
-    static let focusedCopyExcludedLanguage = Key<String>("focused.clipboard.excluded", default: "auto")
+    // Defaults observes key paths: periods are valid only for reading these legacy values.
+    // Use them as compatibility defaults so existing choices survive without overwriting new keys.
+    static let focusedCopyTranslationEnabled = Key<Bool>(
+        "focusedClipboardCopyEnabled",
+        default: Defaults[Key<Bool>("focused.clipboard.copy_enabled", default: false)]
+    )
+    static let focusedCopyExcludedLanguage = Key<String>(
+        "focusedClipboardExcludedLanguage",
+        default: Defaults[Key<String>("focused.clipboard.excluded", default: "auto")]
+    )
     static let focusedSelectionEnabled = Key<Bool>("focused.selection.enabled", default: true)
     static let focusedExcludedLanguage = Key<String>("focused.selection.excluded", default: "Simplified-Chinese")
     static let focusedMinimumLength = Key<Int>("focused.selection.minimum_length", default: 1)

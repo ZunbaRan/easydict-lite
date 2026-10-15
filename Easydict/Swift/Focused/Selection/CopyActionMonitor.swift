@@ -3,7 +3,7 @@
 import AppKit
 import Carbon.HIToolbox
 
-/// Observes external Copy keystrokes without intercepting them or polling an idle clipboard.
+/// Captures external Copy actions, forwards every key unchanged, and never polls an idle clipboard.
 @MainActor
 final class CopyActionMonitor {
     var onCopy: ((LookupInput) -> Void)?
@@ -11,10 +11,21 @@ final class CopyActionMonitor {
     private var eventTap: CFMachPort?
     private var runLoopSource: CFRunLoopSource?
     private var activationObserver: NSObjectProtocol?
+    private var localKeyboardMonitor: Any?
     private var readTask: Task<Void, Never>?
     private var generation = UUID()
 
     func start() {
+        if localKeyboardMonitor == nil {
+            // A nonactivating panel can receive keys while another app remains frontmost.
+            // Cancel only events actually delivered here, not all events while we retain a key-window reference.
+            localKeyboardMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+                MainActor.assumeIsolated {
+                    self?.cancelPendingRead()
+                }
+                return event
+            }
+        }
         if activationObserver == nil {
             activationObserver = NSWorkspace.shared.notificationCenter.addObserver(
                 forName: NSWorkspace.didActivateApplicationNotification, object: nil, queue: .main
@@ -30,6 +41,8 @@ final class CopyActionMonitor {
 
     func stop() {
         cancelPendingRead()
+        if let localKeyboardMonitor { NSEvent.removeMonitor(localKeyboardMonitor) }
+        localKeyboardMonitor = nil
         if let eventTap { CFMachPortInvalidate(eventTap) }
         if let runLoopSource { CFRunLoopRemoveSource(CFRunLoopGetMain(), runLoopSource, .commonModes) }
         eventTap = nil
@@ -50,8 +63,9 @@ final class CopyActionMonitor {
         let mask = [CGEventType.keyDown, .leftMouseDown, .rightMouseDown].reduce(CGEventMask(0)) {
             $0 | CGEventMask(1 << $1.rawValue)
         }
+        // Capture the baseline before forwarding the key. Passive taps may arrive after the app has copied.
         guard let tap = CGEvent.tapCreate(
-            tap: .cgSessionEventTap, place: .headInsertEventTap, options: .listenOnly,
+            tap: .cgSessionEventTap, place: .headInsertEventTap, options: .defaultTap,
             eventsOfInterest: mask,
             callback: { _, type, event, context in
                 guard let context else { return Unmanaged.passUnretained(event) }
@@ -80,8 +94,6 @@ final class CopyActionMonitor {
               event.getIntegerValueField(.keyboardEventKeycode) == Int64(kVK_ANSI_C),
               event.getIntegerValueField(.keyboardEventAutorepeat) == 0,
               modifiers == .maskCommand,
-              // A nonactivating result panel can own the keyboard while another app stays frontmost.
-              NSApp.keyWindow == nil,
               let app = NSWorkspace.shared.frontmostApplication,
               app.processIdentifier != ProcessInfo.processInfo.processIdentifier
         else {

@@ -62,3 +62,30 @@
 - 范围内实现完成，保留测试和打包成功。
 - review 无未解决有效 finding，未验证项如实记录。
 - history 完成，计划归档，创建本地提交。
+
+## 用户复测后的修复
+
+- 复现：设置页选择简体中文后仍显示不过滤语言；磁盘值已经是 Simplified-Chinese，开关磁盘值为 true，但页面显示关闭。
+- 原因：Defaults 的 KVO 路径不支持带点号的 key，新复制偏好的点号键使初始/变更通知回退为默认值；Copy 的订阅会据此停止监听。
+- 范围：只修复本任务新增的两个复制偏好键，保留旧键读取作为兼容默认值，不改其他既有设置。
+- [x] 验证合法键的语言选择与开关显示；重启保留原有中文和开启状态。
+- [x] 已核对开关、语种值、权限和 tap 安装；全局真实按键验证受工具限制，作为后续事项记录。
+- [x] 重新审查、打包、记录，按宿主规则创建修复提交。
+
+### 复测证据与监听修正
+
+- CUA 已复现旧版：磁盘为 Simplified-Chinese / true，页面仍显示不过滤语言 / off。
+- 使用合法 key 后，CUA 选择英语再选回简体中文均立即显示；开关关/开立即显示，重启后读取正确。
+- 用本应用 local keyboard monitor 排除自身按键，不再用可能保留后台引用的 NSApp.keyWindow 阻止所有复制。
+- 使用 defaultTap 并统一返回原始事件，先记录复制前计数再放行；按键不删除、不重写、不模拟。
+- Apple CGEventTapOptions 文档说明 active filter 可原样放行，参见 https://developer.apple.com/documentation/coregraphics/cgeventtapoptions 。同步基线的选择是本实现的时序决策。
+- 临时诊断确认 enabled=true、AX trusted=true、tap installed，配置初始发布值也为 true。
+- CUA 对后台 TextEdit 发送输入时，系统前台仍为 EchoType，诊断未收到全局 CmdC；此路径不能代替真实全局按键检查。已请求用户真实复制一次，等待结果；不把自动化超时当作产品再次失败。
+- 用户追加 EchoType 固定位置 / Pin 常驻 / 未固定闲置隐藏需求，在 EchoType 仓库独立实现；Easydict 本轮保持现有关闭方式，只同步复制唤出。
+
+### 最终交付边界
+
+- 两个复制偏好修复、事件基线时序和自身事件排除均通过代码审查；没有未解决 finding。
+- 保留的 8 项测试通过；EchoType 独立任务的 64 项纯逻辑测试通过。
+- 最终 Release 产物移除全部临时 DEBUG-copyfix 诊断；稳定签名与 SDK 字段再次核对。
+- 已通过异步问题请求用户真实复制反馈，当前未收到；真实全局按键与 EchoType 计时隐藏场景不声称已完成实测。

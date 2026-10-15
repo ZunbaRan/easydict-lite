@@ -96,6 +96,10 @@ final class FocusedAppDelegate: NSObject, NSApplicationDelegate {
         let menu = NSMenu()
         let appItem = NSMenuItem()
         let appMenu = NSMenu(title: AppStrings.text("focused.app.name"))
+        let settingsItem = NSMenuItem(title: AppStrings.text("focused.menu.settings"), action: #selector(showSettings), keyEquivalent: ",")
+        settingsItem.target = self
+        appMenu.addItem(settingsItem)
+        appMenu.addItem(.separator())
         appMenu.addItem(NSMenuItem(title: AppStrings.text("focused.menu.quit"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: ""))
         appItem.submenu = appMenu
         menu.addItem(appItem)
