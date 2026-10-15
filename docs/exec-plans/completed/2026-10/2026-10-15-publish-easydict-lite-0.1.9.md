@@ -1,6 +1,6 @@
 # Publish easydict-lite 0.1.9
 
-- 状态：active
+- 状态：completed
 - 创建日期：2026-10-15
 - 负责人：Codex
 - 关联 Issue/PR：none
@@ -41,9 +41,9 @@ User accepted the copy-translation and panel changes and requested commit, push 
 ## 进度
 
 - [x] Confirmed source and release target.
-- [ ] Package, commit and Draft validation.
-- [ ] Publish, verify assets and synchronize main.
-- [ ] Archive records and final clean-state verification.
+- [x] Package, commit and Draft validation.
+- [x] Publish, verify assets and synchronize main.
+- [x] Archive records; final commit/push and clean-state verification follow.
 
 ## 验证
 
@@ -54,3 +54,13 @@ User accepted the copy-translation and panel changes and requested commit, push 
 
 - Release and public assets match local bytes; tag/source and fork refs verified.
 - Plan/history archived, delivery records pushed and worktree clean.
+
+### Publication evidence
+
+- Version 0.1.9/build 10, org.easydict.focused, arm64, minos 26.0 and SDK 26.5 verified. Release packaging, app and extracted-ZIP strict signatures and binary identity passed.
+- Preparation commit 2dcb6f54515f7812d18ad10af4f574404dcbaa21 and annotated tag v0.1.9 pushed; immutable tag peels to the preparation commit.
+- Draft title/body/channel and unique uploaded asset names, sizes, types and SHA-256 digests matched local evidence. Published prerelease 0.1.9, GitHub ID 413542098.
+- Anonymous ZIP and checksum downloads returned 200 and matched local bytes exactly. ZIP SHA-256 c747c3ea4dbb1a433774404fd75689bef84552bd90bf86baa21527c6bc15daad (2926343 bytes); checksum SHA-256 8b42397ebd81e824f1f3aa7def70aa4572050f20879501ad48b8a7edb36e68bc (102 bytes).
+- Fork main fast-forwarded after public verification. No upstream writes. Issues disabled and zero merged fork PRs; no follow-up messages apply.
+- No ASC run, appcast or DMG for this fork. Temporary extraction/download directories were automatically removed; dist artifacts, release API evidence and delivery receipts are retained.
+- EchoType 0.6.0 also committed, pushed and published independently. Both local applications restarted with released version metadata.
